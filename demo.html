@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<!-- DEMO scoreboard: every name, amount, logo and QR code in this file is made up. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Honey Pot Spelling Bee — DEMO Scoreboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --honey:#f59e0b; --honey-deep:#b45309; --honey-light:#fde68a;
+    --navy:#1e3a8a; --navy-deep:#172554; --cream:#fffbeb; --cream-2:#fef3c7;
+    --ink:#172554; --red:#dc2626;
+    --display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",Impact,sans-serif;
+    --body:"Nunito","Trebuchet MS",Verdana,sans-serif;
+    --hex:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--body);color:var(--ink);background-color:var(--cream);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23f59e0b' stroke-opacity='.2' stroke-width='2'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23f59e0b' stroke-opacity='.2' stroke-width='2'/%3E%3C/svg%3E");
+    display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100vh;overflow:hidden;
+    padding-bottom:38px; /* room for the controls handle */
+  }
+  button{font:inherit;cursor:pointer}
+  :focus-visible{outline:3px solid var(--honey);outline-offset:2px}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;align-items:center;gap:clamp(12px,2vw,28px);
+    padding:clamp(8px,1.2vw,16px) clamp(14px,2.4vw,40px);
+    background:linear-gradient(180deg,var(--navy) 0%,var(--navy-deep) 100%);
+    color:var(--cream);border-bottom:6px solid var(--honey);position:relative;
+  }
+  .logo{width:clamp(70px,7.4vw,124px);aspect-ratio:1;border-radius:24%;background:#fff;padding:5px;box-sizing:border-box;
+    display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 0 4px var(--honey)}
+  .logo img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;display:block}
+  .brand{min-width:0;flex:1;container-type:inline-size}
+  .bb-title{font-family:var(--display);font-size:min(9.2cqw,6rem);line-height:1;display:flex;align-items:center;gap:.22em;white-space:nowrap}
+  .bb-title svg{width:.95em;height:.72em;flex:none;transform:rotate(-8deg)}
+  .bb-sub{font-weight:800;font-size:min(2.9cqw,1.6rem);color:var(--honey-light);margin-top:.35em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .round-chip{
+    font-family:var(--display);font-size:clamp(1.2rem,2.8vw,2.8rem);background:var(--honey);color:var(--navy-deep);
+    padding:.2em .8em;border-radius:999px;white-space:nowrap;box-shadow:0 4px 0 var(--honey-deep)
+  }
+
+  /* Header spotlight: agencies your gift supports */
+  .spot{flex:none;width:clamp(300px,35vw,700px);height:clamp(76px,10.2vh,112px);align-self:center;margin:0;background:#fff;border:4px solid var(--honey);border-radius:20px;
+    display:flex;align-items:center;gap:clamp(8px,1vw,16px);padding:6px clamp(8px,1vw,16px);color:var(--navy-deep);transition:opacity .45s}
+  .spot.fade{opacity:0}
+  .spot-logo{flex:none;width:clamp(80px,8.5vw,170px);height:100%;min-height:0;overflow:hidden}
+  .spot-logo img{width:100%;height:100%;object-fit:contain;display:block}
+  .spot-txt{min-width:0}
+  .spot-k{font-weight:800;font-size:clamp(.62rem,.85vw,.9rem);color:var(--honey-deep);line-height:1.1}
+  .spot-n{font-family:var(--display);font-size:clamp(1rem,1.6vw,1.7rem);line-height:1.05;color:var(--navy)}
+  .spot-d{font-weight:700;font-size:clamp(.75rem,1.05vw,1.1rem);line-height:1.18;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  @media (max-width:1180px){.spot{display:none}}
+
+  /* ---------- Main grid ---------- */
+  main{
+    display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+    gap:clamp(10px,1.8vw,30px);padding:clamp(10px,1.6vw,26px) clamp(14px,2.4vw,40px);min-height:0;
+  }
+  section{min-height:0;display:flex;flex-direction:column}
+  h2{font-family:var(--display);font-weight:400;font-size:clamp(1.3rem,2.4vw,2.4rem);line-height:1.05}
+  .sub{font-weight:700;opacity:.75;font-size:clamp(.8rem,1.1vw,1.1rem)}
+
+  /* Honey pot */
+  .pot{container-type:size;align-items:stretch;text-align:center}
+  .pot > h2{font-size:min(8cqh,3.2rem);margin-bottom:.1em}
+  .pot-body{flex:1;min-height:0;display:flex;gap:3cqw;align-items:center;justify-content:center}
+  .pot-art{height:100%;aspect-ratio:320/390;max-width:56cqw;flex:none;position:relative}
+  .pot-info{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;gap:2cqh;padding:1cqh 0}
+  .pot-info > div:first-child{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .give.inpot{flex-direction:column;width:auto;margin:0;padding:1.6cqh 2cqw;text-align:center;gap:1cqh}
+  .give.inpot .qrbox{width:min(34cqh,22cqw);height:min(34cqh,22cqw)}
+  .give.inpot .give-title{font-size:min(4.8cqh,2.7cqw)}
+  .give.inpot .give-note{font-size:min(3cqh,1.65cqw);margin-top:.2em}
+  .pot-art svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 14px 18px rgba(180,83,9,.25))}
+  .pot-total{font-family:var(--display);font-size:min(15cqh,9.2cqw);line-height:1;color:var(--navy)}
+  .pot-total.bump{animation:bump .8s ease-out}
+  /* the jar shakes when money goes in (bigger gifts shake harder) */
+  .pot-art{transform-origin:50% 92%}
+  .pot-art.shake{animation:potShake .85s cubic-bezier(.36,.07,.19,.97)}
+  .pot-art.shake.big{animation:potShakeBig 1.3s cubic-bezier(.36,.07,.19,.97)}
+  @keyframes potShake{10%,90%{transform:rotate(-1.5deg)}20%,80%{transform:rotate(2.5deg) translateX(-.4%)}30%,50%,70%{transform:rotate(-4deg) translateX(.6%)}40%,60%{transform:rotate(4deg) translateX(-.6%)}}
+  @keyframes potShakeBig{8%,92%{transform:rotate(-2deg)}16%,84%{transform:rotate(4deg) translateX(-.8%)}28%,52%,76%{transform:rotate(-7deg) translateX(1%) scale(1.03)}40%,64%{transform:rotate(7deg) translateX(-1%) scale(1.03)}}
+  @media (prefers-reduced-motion:reduce){.pot-art.shake,.pot-art.shake.big{animation:none}}
+  @keyframes bump{30%{transform:scale(1.08);color:var(--honey-deep)}}
+  .pot-meta{font-weight:800;font-size:min(4.2cqh,2.3cqw);margin-top:.3em}
+  #honeyG{transition:transform 1.6s cubic-bezier(.3,.7,.2,1)}
+  .fb .wing{transform-box:fill-box;transform-origin:50% 100%;animation:flap .08s ease-in-out infinite alternate}
+  @keyframes flap{from{scale:1 1}to{scale:1 .3}}
+  .wave1{animation:wave 7s linear infinite}
+  .wave2{animation:wave 11s linear infinite reverse;opacity:.55}
+  @keyframes wave{to{transform:translateX(-320px)}}
+  .bub{animation:rise 6s ease-in infinite;opacity:0}
+  @keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.7}100%{transform:translateY(-190px);opacity:0}}
+
+  /* Give / QR */
+  .give{display:flex;align-items:center;gap:clamp(10px,1.2vw,18px);width:100%;background:#fff;border:4px solid var(--navy);border-radius:22px;
+    padding:clamp(8px,1vh,14px) clamp(10px,1.2vw,18px);box-shadow:0 6px 0 var(--honey);margin-top:clamp(8px,1.2vh,16px);text-align:left}
+  .qrbox{width:clamp(100px,19vh,210px);height:clamp(100px,19vh,210px);flex:none;display:block}
+  .give-text{min-width:0}
+  .give-title{display:block;font-family:var(--display);font-weight:400;font-size:clamp(1.15rem,1.9vw,2rem);line-height:1.05;color:var(--navy)}
+  .give-note{display:block;font-weight:700;font-size:clamp(.75rem,1vw,1.05rem);opacity:.8;margin-top:.3em}
+  .give.corner{position:absolute;right:2.5vw;bottom:calc(38px + 2.5vh);width:auto;max-width:min(520px,46vw);margin:0}
+  .give.corner .qrbox{width:clamp(110px,22vh,230px);height:clamp(110px,22vh,230px)}
+
+  /* Timer */
+  .timer-card{
+    flex:1;min-height:0;background:var(--navy);color:var(--cream);border-radius:28px;
+    padding:clamp(12px,1.6vw,26px);display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+    box-shadow:0 10px 0 var(--navy-deep);transition:background .2s;position:relative;overflow:hidden
+  }
+  .timer-card h2{color:var(--honey-light)}
+  .ring-wrap{flex:1;min-height:0;width:100%;display:grid;place-items:center;position:relative}
+  .ring-wrap svg{height:100%;max-height:100%;width:auto;max-width:100%}
+  .ring-bg{stroke:rgba(255,255,255,.14)} .ring-fg{stroke:var(--honey);transition:stroke .2s}
+  .count{font-family:var(--display);fill:var(--cream);font-size:150px}
+  .count-note{font-weight:800;fill:var(--honey-light);font-size:20px}
+  .t-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .t-btns button{background:rgba(255,255,255,.12);color:var(--cream);border:2px solid rgba(255,255,255,.35);
+    padding:.35em 1.1em;border-radius:999px;font-weight:800;font-size:clamp(.8rem,1.1vw,1.1rem)}
+  .t-btns button:hover{background:var(--honey);color:var(--navy-deep);border-color:var(--honey)}
+  body.danger .timer-card{background:var(--red)}
+  body.danger .ring-fg{stroke:#fff}
+  body.danger .count{animation:pulse .5s ease-in-out infinite alternate;transform-origin:center;transform-box:fill-box}
+  @keyframes pulse{to{transform:scale(1.12)}}
+  body.timeup .timer-card{background:var(--red)}
+  #flash{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:0;
+    background:radial-gradient(circle at 50% 50%,rgba(220,38,38,.1),rgba(220,38,38,.78))}
+  body.danger #flash{animation:flash .5s steps(2,jump-none) infinite}
+  @keyframes flash{0%{opacity:0}100%{opacity:1}}
+
+  /* Leaderboard */
+  .board-card{flex:1;min-height:0;background:#fff;border-radius:28px;border:4px solid var(--navy);
+    display:flex;flex-direction:column;overflow:hidden;box-shadow:0 10px 0 rgba(30,58,138,.18)}
+  .board-head{background:var(--navy);color:var(--cream);padding:clamp(6px,.9vh,12px) clamp(14px,1.6vw,26px);border-bottom:5px solid var(--honey)}
+  .board-head h2{color:var(--honey-light)}
+  #board{list-style:none;flex:1;min-height:0;display:flex;flex-direction:column;gap:clamp(4px,.6vw,10px);padding:clamp(8px,1vw,16px)}
+  #board li{
+    flex:1 1 0;font-size:1rem;min-height:0;display:flex;align-items:center;gap:clamp(8px,1.2vw,18px);
+    padding:0 clamp(8px,1.2vw,18px);border-radius:16px;background:var(--cream);border-left:8px solid var(--honey-light);position:relative
+  }
+  #board li{background:#fff;box-shadow:inset 0 0 0 2px #e5e7eb}
+  #board li:nth-child(even){background:#f8fafc}
+  #board li.lead{background:linear-gradient(90deg,var(--honey-light),#fff3c4);border-left-color:var(--honey);box-shadow:0 0 0 3px var(--honey)}
+  #board li{border-left-color:var(--tc,var(--honey-light));border-left-width:12px}
+  #board li.lead{border-left-color:var(--tc,var(--honey))}
+  .chips{display:flex;gap:8px;align-items:center;flex:none;height:72%}
+  .chip{height:100%;background:#fff;border:2px solid var(--tc,var(--navy));border-radius:10px;padding:0 8px;display:flex;align-items:center;gap:5px;
+    font-weight:800;color:var(--navy);font-size:clamp(.65rem,.95vw,1rem);white-space:nowrap}
+  .chip img{height:86%;width:auto;display:block;border-radius:3px}
+  .chip svg{height:80%;width:auto}
+  #board li.rose{animation:rose 1.8s ease-out}
+  @keyframes rose{0%,40%{background:#fde68a}}
+  .badge{
+    width:min(3.6vw,6vh);aspect-ratio:1;flex:none;display:grid;place-items:center;
+    clip-path:var(--hex);background:var(--navy);color:#fff;font-family:var(--display);font-size:min(2.1vw,3.8vh)
+  }
+  .lead .badge{background:var(--honey);color:var(--navy-deep)}
+  .who{min-width:0;flex:1}
+  .nm{font-family:var(--display);font-size:min(3vw,5.2vh);line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0b1b4d}
+  .tg{display:none;font-weight:700;font-size:clamp(.65rem,.95vw,1rem);opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .flag{display:none;font-weight:800;background:var(--navy);color:var(--honey-light);border-radius:999px;
+    padding:.25em .9em;font-size:min(1.45vw,2.6vh);white-space:nowrap;align-items:center;gap:.4em}
+  .flag svg{width:1.6em;height:1.2em}
+  .lead .flag{display:inline-flex}
+
+  /* ---------- Sponsor ticker ---------- */
+  .ticker{display:flex;align-items:stretch;background:var(--navy-deep);border-top:5px solid var(--honey);height:clamp(58px,8vh,84px);overflow:hidden}
+  .ticker-label{flex:none;background:var(--honey);color:var(--navy-deep);font-family:var(--display);
+    display:flex;align-items:center;gap:.5em;padding:0 clamp(12px,1.8vw,28px);font-size:clamp(.9rem,1.6vw,1.6rem);line-height:1}
+  .ticker-label svg{width:1.9em;height:1.4em}
+  .track-wrap{flex:1;overflow:hidden;display:flex;align-items:center;
+    mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+  .track{display:flex;gap:clamp(18px,2.4vw,40px);width:max-content;animation:scroll var(--dur,40s) linear infinite;padding-right:clamp(18px,2.4vw,40px)}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+  .pill{height:clamp(38px,5.6vh,58px);background:#fff;border-radius:14px;padding:0 18px;display:flex;align-items:center;justify-content:center;flex:none;min-width:90px}
+  .pill img{height:82%;width:auto;display:block;border-radius:4px}
+  .pill span{font-family:var(--display);color:var(--navy);font-size:clamp(1rem,1.9vw,1.9rem);white-space:nowrap}
+
+  /* ---------- Controls bar ---------- */
+  #controls{position:fixed;left:0;right:0;bottom:0;z-index:120;background:#0f172a;color:#e2e8f0;font-size:14px}
+  .handle{height:38px;display:flex;align-items:center;gap:12px;padding:0 14px;cursor:pointer;border-top:2px solid var(--honey);user-select:none}
+  .dot{width:11px;height:11px;border-radius:50%;background:#64748b;flex:none}
+  .dot.ok{background:#22c55e;box-shadow:0 0 8px #22c55e} .dot.err{background:#ef4444;box-shadow:0 0 8px #ef4444}
+  .handle .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .handle .tog{font-weight:800;color:var(--honey-light)}
+  .panel{display:none;padding:14px 16px 16px;max-height:58vh;overflow:auto;border-top:1px solid #334155}
+  #controls.open .panel{display:block}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+  .row label{font-weight:800;min-width:92px}
+  .row input[type=text],.row select{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;padding:8px 10px;min-width:0}
+  #csvUrl{flex:1;min-width:220px}
+  .btn{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;padding:8px 14px;font-weight:800}
+  .btn:hover{background:#334155}
+  .btn.gold{background:var(--honey);color:var(--navy-deep);border-color:var(--honey)} .btn.gold:hover{background:#fbbf24}
+  .hint{color:#94a3b8;font-size:13px;line-height:1.5}
+  kbd{background:#334155;border-radius:4px;padding:1px 6px;font-family:inherit;font-weight:800;color:#fff}
+
+  /* ---------- Overlays ---------- */
+  .ov{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;text-align:center;flex-direction:column;padding:4vw;overflow:hidden}
+  .ov.show{display:flex;animation:ovin .45s cubic-bezier(.2,.9,.3,1)}
+  @keyframes ovin{from{opacity:0;transform:scale(1.06)}}
+  .ov .big{font-family:var(--display);line-height:.95}
+  .ov .msg{font-weight:800;margin-top:.4em}
+  .ov .hint-esc{position:absolute;bottom:14px;right:18px;font-size:13px;font-weight:700;opacity:.55}
+
+  #ovRound{background:var(--navy);color:var(--cream)}
+  #ovRound .big{font-size:clamp(4rem,16vw,17rem);color:var(--honey);text-shadow:0 .05em 0 var(--navy-deep)}
+  #ovRound .msg{font-size:clamp(1.3rem,3.2vw,3.4rem);color:var(--honey-light)}
+  #ovRound.final .big{color:#fff;text-shadow:0 0 .4em var(--honey),0 .05em 0 var(--honey-deep)}
+  .flyer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .flyer .trail{fill:none;stroke:var(--honey-light);stroke-width:5;stroke-dasharray:4 20;stroke-linecap:round;opacity:.75}
+  .flybee{position:absolute;left:0;top:0;width:clamp(60px,8vw,120px);offset-path:path("M -100 700 C 300 100, 600 900, 900 380 S 1500 120, 2100 520");offset-rotate:0deg;animation:fly 4.8s ease-in-out infinite}
+  @keyframes fly{from{offset-distance:0%}to{offset-distance:100%}}
+
+  #ovCongrats{background:radial-gradient(circle at 50% 40%,#fcd34d,var(--honey) 60%,var(--honey-deep));color:var(--navy-deep)}
+  #ovCongrats .big{font-size:clamp(3.4rem,12.5vw,13rem);animation:boing 1.3s ease-in-out infinite alternate;text-shadow:0 .05em 0 rgba(255,255,255,.55)}
+  @keyframes boing{to{transform:translateY(-3vh) rotate(-1.5deg)}}
+  #ovCongrats .msg{font-size:clamp(1.5rem,4.2vw,4.4rem);color:var(--navy)}
+  #confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+  #ovSting{background:repeating-linear-gradient(-45deg,#111827 0 38px,#f59e0b 38px 76px);color:#fff}
+  #ovSting .card{background:#111827;border:8px solid var(--honey);border-radius:36px;padding:3vw 5vw;max-width:92vw}
+  #ovSting .kick{font-family:var(--display);color:var(--honey);font-size:clamp(1.4rem,3.6vw,3.8rem)}
+  #ovSting .big{font-size:clamp(5rem,20vw,21rem);color:#ef4444;animation:shake .5s linear infinite;text-shadow:0 .04em 0 #7f1d1d}
+  @keyframes shake{0%,100%{transform:translateX(0) rotate(0)}20%{transform:translateX(-1.2vw) rotate(-2deg)}40%{transform:translateX(1.2vw) rotate(2deg)}60%{transform:translateX(-.8vw) rotate(-1deg)}80%{transform:translateX(.8vw) rotate(1deg)}}
+  #ovSting .msg{font-size:clamp(1.2rem,2.8vw,3rem);color:var(--cream)}
+
+  #ovImpact{background:radial-gradient(circle at 50% 30%,#1e40af,var(--navy) 55%,var(--navy-deep));color:var(--cream);justify-content:center;padding-top:2vh;padding-bottom:calc(38px + 2vh)}
+  #ovImpact h2{color:var(--honey);font-size:clamp(2rem,5vw,5.2rem);line-height:1}
+  #ovImpact .lede{font-weight:800;font-size:clamp(.9rem,1.7vw,1.7rem);color:var(--honey-light);margin:1vh 0 3vh;max-width:80vw}
+  #ovImpact .row2{display:flex;gap:2.5vw;align-items:stretch;justify-content:center;width:100%}
+  #ovImpact .stage{flex:none;width:min(62vw,1100px);height:56vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6vh;color:var(--navy);text-align:center}
+  #ovImpact .stage .lg{height:22vh;max-width:70%;object-fit:contain}
+  #ovImpact .stage .an{font-family:var(--display);font-size:clamp(1.7rem,4.2vw,4.4rem);line-height:1.02;color:var(--navy)}
+  #ovImpact .stage .ad{font-weight:800;font-size:clamp(1.05rem,2vw,2.2rem);line-height:1.28;max-width:92%;color:var(--navy-deep)}
+  #ovImpact .dots i{background:rgba(255,255,255,.3)} #ovImpact .dots i.on{background:var(--honey)}
+  .give.side{flex-direction:column;width:auto;max-width:24vw;text-align:center;margin:0;justify-content:center;color:var(--navy-deep)}
+  .give.side .qrbox{width:clamp(130px,30vh,320px);height:clamp(130px,30vh,320px)}
+  .give.side .give-title{font-size:clamp(1.2rem,2.2vw,2.4rem)} .give.side .give-note{font-size:clamp(.8rem,1.15vw,1.2rem)}
+  #ovSponsors{background-color:var(--cream);color:var(--navy)}
+  #ovSponsors{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23f59e0b' stroke-opacity='.3' stroke-width='2'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23f59e0b' stroke-opacity='.3' stroke-width='2'/%3E%3C/svg%3E")}
+  #ovSponsors{justify-content:flex-start;padding-top:5vh}
+  #ovSponsors h2{font-size:clamp(1.8rem,4.6vw,4.8rem);margin-bottom:2vh}
+  .stage{width:min(80vw,1100px);height:38vh;background:#fff;border:6px solid var(--navy);border-radius:36px;display:grid;place-items:center;box-shadow:0 14px 0 var(--honey);padding:3vh 3vw}
+  .stage.swap{animation:swap .7s ease}
+  @keyframes swap{from{opacity:0;transform:translateY(24px) scale(.97)}}
+  .stage img{max-width:100%;max-height:26vh;object-fit:contain}
+  .stage .nm2{font-family:var(--display);font-size:clamp(3rem,10vw,10rem);color:var(--navy);line-height:1}
+  .stage .tg2{font-weight:800;font-size:clamp(1rem,2.4vw,2.4rem);color:var(--honey-deep);margin-top:1vh}
+  .dots{display:flex;gap:12px;margin-top:3vh}
+  .dots i{width:16px;height:16px;clip-path:var(--hex);background:var(--honey-light)} .dots i.on{background:var(--navy);transform:scale(1.3)}
+
+  /* ---------- Small screens ---------- */
+  @media (max-width:1280px){.chips .chip span{display:none}.chips .chip.txt span{display:inline}}
+  @media (max-width:1500px){
+    .spot{width:clamp(280px,31vw,700px)} .spot-logo{width:clamp(70px,6.5vw,170px)}
+    .spot-k{display:none} .spot-n{font-size:clamp(.85rem,1.3vw,1.3rem)} .spot-d{font-size:clamp(.7rem,.92vw,.95rem)}
+    .round-chip{font-size:clamp(1rem,2vw,2.8rem)}
+    .flag{font-size:min(1.45vw,2.5vh);padding:.2em .7em} .flag svg{display:none}
+  }
+  @media (max-width:1400px){ .tg{display:none} .chip{padding:0 5px} }
+  @media (max-height:820px){
+    .give{padding:6px 12px;margin-top:6px} .give-title{font-size:min(1.9vw,3.3vh)} .give-note{font-size:min(1vw,1.9vh)}
+    .nm{font-size:min(3vw,4.9vh)} .badge{width:min(3.6vw,5.8vh);font-size:min(2.1vw,3.7vh)}
+    h2{font-size:min(2.4vw,4vh)} .board-head{padding:6px 14px} .sub{font-size:min(1.1vw,1.9vh)}
+    .chips{height:72%}
+    .give.corner .qrbox,.give.side .qrbox{width:clamp(110px,24vh,300px);height:clamp(110px,24vh,300px)}
+  }
+
+  @media (max-width:980px){
+    body{display:block;overflow:auto;height:auto;min-height:100vh}
+    main{grid-template-columns:1fr}
+    .pot{container-type:normal} .pot-body{flex-direction:column} .pot-art{height:360px;max-width:none} .pot-info{height:auto}
+    .give.inpot .qrbox{width:200px;height:200px}
+    .give.corner{position:static;margin-top:3vh} .board-card{min-height:560px}
+    .ticker{position:sticky;bottom:38px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .wave1,.wave2,.bub,.flybee,#ovCongrats .big,#ovSting .big{animation:none}
+    .track{animation-duration:120s}
+  }
+
+  /* Leaderboard rows size themselves from their own height, so nothing can overlap at any window size */
+  #board li{container-type:size}
+  #board li .badge{width:auto;height:80cqh;aspect-ratio:1;font-size:44cqh}
+  #board li .nm{font-size:min(58cqh,5.4cqw)}
+  #board li .flag{font-size:min(30cqh,2.3cqw);padding:.2em .8em} #board li .flag svg{display:none}
+  #board li .chips{height:70cqh}
+  #board li .chip{font-size:min(28cqh,1.9cqw)}
+
+  /* Timer pop-up: only visible while the clock is in use */
+  #timerPop{position:fixed;left:50%;top:50%;z-index:95;transform:translate(-50%,-46%) scale(.9);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+  body.timer-on #timerPop{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+  #timerPop .timer-card{flex:none;width:min(58vh,500px);padding:14px 20px 20px;gap:6px;box-shadow:0 14px 0 var(--navy-deep),0 30px 90px rgba(0,0,0,.5)}
+  #timerPop .timer-card h2{font-size:clamp(1.1rem,2.6vh,1.6rem)}
+  #timerPop .ring-wrap{flex:none;width:100%;aspect-ratio:1}
+
+  /* "Your gift supports" banner: same height as the header logo; logo gets a fixed box so it always fits */
+  header{--hh:clamp(74px,7.4vw,124px)}
+  .logo{width:var(--hh)}
+  .spot{width:clamp(320px,38vw,780px);height:var(--hh);padding:8px clamp(8px,1vw,14px);gap:clamp(8px,1vw,16px);
+    display:grid;grid-template-columns:minmax(0,38%) minmax(0,1fr);grid-template-rows:minmax(0,1fr);align-items:center}
+  .spot-logo{width:auto;height:100%;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .spot-logo img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;display:block}
+  .spot-n{font-size:clamp(.95rem,1.55vw,1.6rem)} .spot-d{font-size:clamp(.72rem,1vw,1.05rem)}
+
+  /* Sponsor showcase: sponsor slides + "Welcome to the hive" team slides, QR always beside them */
+  #ovSponsors{padding-bottom:calc(38px + 2vh);padding-top:3vh;justify-content:center}
+  #ovSponsors .row2{display:flex;gap:2.5vw;align-items:stretch;justify-content:center;width:100%}
+  #ovSponsors .stage{flex:none;width:min(62vw,1100px);height:56vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.2vh 2.2vw;text-align:center}
+  #ovSponsors .stage img{max-height:30vh}
+  #ovSponsors .stage.team{padding:0;overflow:hidden;align-items:stretch;justify-content:flex-start}
+  .tslide{display:flex;flex-direction:column;width:100%;height:100%;text-align:left}
+  .tband{background:var(--tc,var(--navy));color:#fff;padding:1.6vh 1.8vw;display:flex;align-items:center;justify-content:space-between;gap:1.5vw}
+  .tband .tn{font-family:var(--display);font-size:min(4.2vw,8vh);line-height:1.02;text-shadow:0 .05em 0 rgba(0,0,0,.25);min-width:0}
+  .tband .tl{flex:none;height:10vh;background:#fff;border-radius:14px;padding:.8vh 1vw;display:flex;align-items:center}
+  .tband .tl .tltxt{font-family:var(--display);color:var(--navy);font-size:min(2.1vw,4vh);white-space:nowrap;padding:0 .4vw}
+  .tband .tl{gap:1vw}
+  .tband .tl img{height:100%;width:auto;max-width:16vw;max-height:100%;object-fit:contain}
+  .tbody{flex:1;min-height:0;display:flex;align-items:center;overflow:hidden;padding:1.6vh 2.2vw;font-weight:800;font-size:min(2.3vw,4.4vh);line-height:1.3;color:var(--navy-deep)}
+  .tmemo{background:var(--honey);color:var(--navy-deep);padding:1.4vh 1.8vw;font-weight:800;font-size:min(1.7vw,3.2vh);line-height:1.2;text-align:center}
+  .tmemo b{font-family:var(--display);font-weight:400;font-size:1.12em;letter-spacing:.01em}
+  .demo-badge{position:fixed;top:10px;right:10px;z-index:9999;background:#7c3aed;color:#fff;font-weight:800;letter-spacing:.08em;
+    font-size:.8rem;padding:6px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.3);pointer-events:none}
+</style>
+</head>
+<body>
+<div class="demo-badge">DEMO · SAMPLE DATA</div>
+
+<!-- Shared bee icon -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="beeBodyClip"><ellipse cx="30" cy="30" rx="18" ry="12"/></clipPath>
+    <symbol id="qr" viewBox="0 0 45 45"><rect width="45" height="45" fill="#fff"/><path d="M0 0h2v1h-2zM3 0h1v1h-1zM5 0h2v1h-2zM8 0h5v1h-5zM14 0h2v1h-2zM19 0h1v1h-1zM21 0h1v1h-1zM23 0h4v1h-4zM28 0h1v1h-1zM31 0h1v1h-1zM33 0h3v1h-3zM37 0h2v1h-2zM40 0h2v1h-2zM44 0h1v1h-1zM4 1h1v1h-1zM6 1h2v1h-2zM9 1h1v1h-1zM11 1h1v1h-1zM16 1h1v1h-1zM20 1h1v1h-1zM25 1h1v1h-1zM30 1h2v1h-2zM33 1h1v1h-1zM35 1h3v1h-3zM39 1h3v1h-3zM43 1h2v1h-2zM11 2h2v1h-2zM15 2h4v1h-4zM25 2h1v1h-1zM30 2h3v1h-3zM43 2h2v1h-2zM3 3h7v1h-7zM11 3h4v1h-4zM16 3h2v1h-2zM20 3h1v1h-1zM22 3h1v1h-1zM27 3h3v1h-3zM33 3h1v1h-1zM35 3h7v1h-7zM43 3h2v1h-2zM0 4h2v1h-2zM3 4h1v1h-1zM9 4h1v1h-1zM11 4h3v1h-3zM20 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM31 4h2v1h-2zM35 4h1v1h-1zM41 4h1v1h-1zM44 4h1v1h-1zM1 5h1v1h-1zM3 5h1v1h-1zM5 5h3v1h-3zM9 5h1v1h-1zM11 5h3v1h-3zM15 5h3v1h-3zM19 5h2v1h-2zM23 5h1v1h-1zM28 5h4v1h-4zM33 5h1v1h-1zM35 5h1v1h-1zM37 5h3v1h-3zM41 5h1v1h-1zM43 5h2v1h-2zM3 6h1v1h-1zM5 6h3v1h-3zM9 6h1v1h-1zM17 6h1v1h-1zM21 6h6v1h-6zM30 6h1v1h-1zM33 6h1v1h-1zM35 6h1v1h-1zM37 6h3v1h-3zM41 6h1v1h-1zM43 6h1v1h-1zM0 7h2v1h-2zM3 7h1v1h-1zM5 7h3v1h-3zM9 7h1v1h-1zM11 7h1v1h-1zM15 7h3v1h-3zM19 7h3v1h-3zM24 7h2v1h-2zM29 7h2v1h-2zM32 7h2v1h-2zM35 7h1v1h-1zM37 7h3v1h-3zM41 7h1v1h-1zM0 8h2v1h-2zM3 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM13 8h5v1h-5zM20 8h1v1h-1zM23 8h1v1h-1zM25 8h1v1h-1zM28 8h1v1h-1zM32 8h1v1h-1zM35 8h1v1h-1zM41 8h1v1h-1zM43 8h2v1h-2zM3 9h7v1h-7zM13 9h1v1h-1zM15 9h4v1h-4zM21 9h1v1h-1zM23 9h8v1h-8zM35 9h7v1h-7zM43 9h1v1h-1zM14 10h5v1h-5zM25 10h1v1h-1zM31 10h1v1h-1zM33 10h1v1h-1zM2 11h3v1h-3zM6 11h1v1h-1zM8 11h3v1h-3zM14 11h1v1h-1zM18 11h1v1h-1zM20 11h1v1h-1zM23 11h2v1h-2zM27 11h3v1h-3zM31 11h1v1h-1zM33 11h1v1h-1zM36 11h1v1h-1zM41 11h1v1h-1zM44 11h1v1h-1zM0 12h1v1h-1zM2 12h5v1h-5zM8 12h1v1h-1zM11 12h1v1h-1zM15 12h3v1h-3zM20 12h5v1h-5zM26 12h1v1h-1zM28 12h2v1h-2zM31 12h2v1h-2zM41 12h1v1h-1zM43 12h1v1h-1zM1 13h2v1h-2zM4 13h1v1h-1zM6 13h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h4v1h-4zM20 13h1v1h-1zM23 13h8v1h-8zM34 13h2v1h-2zM37 13h4v1h-4zM42 13h1v1h-1zM1 14h5v1h-5zM9 14h2v1h-2zM15 14h2v1h-2zM21 14h3v1h-3zM30 14h1v1h-1zM32 14h1v1h-1zM34 14h1v1h-1zM37 14h3v1h-3zM42 14h2v1h-2zM1 15h2v1h-2zM4 15h2v1h-2zM11 15h2v1h-2zM15 15h2v1h-2zM19 15h2v1h-2zM23 15h4v1h-4zM28 15h1v1h-1zM32 15h1v1h-1zM34 15h1v1h-1zM36 15h2v1h-2zM39 15h1v1h-1zM42 15h3v1h-3zM2 16h3v1h-3zM6 16h4v1h-4zM15 16h2v1h-2zM19 16h1v1h-1zM21 16h7v1h-7zM29 16h1v1h-1zM31 16h2v1h-2zM35 16h2v1h-2zM38 16h1v1h-1zM40 16h2v1h-2zM43 16h2v1h-2zM2 17h3v1h-3zM6 17h1v1h-1zM9 17h2v1h-2zM13 17h1v1h-1zM15 17h3v1h-3zM22 17h2v1h-2zM27 17h3v1h-3zM32 17h1v1h-1zM38 17h3v1h-3zM42 17h2v1h-2zM0 18h3v1h-3zM4 18h1v1h-1zM8 18h3v1h-3zM13 18h3v1h-3zM21 18h1v1h-1zM23 18h1v1h-1zM25 18h1v1h-1zM27 18h4v1h-4zM33 18h2v1h-2zM37 18h1v1h-1zM41 18h1v1h-1zM1 19h4v1h-4zM8 19h1v1h-1zM10 19h2v1h-2zM14 19h1v1h-1zM17 19h5v1h-5zM24 19h3v1h-3zM28 19h3v1h-3zM33 19h3v1h-3zM38 19h2v1h-2zM41 19h3v1h-3zM0 20h1v1h-1zM2 20h2v1h-2zM6 20h2v1h-2zM9 20h2v1h-2zM12 20h1v1h-1zM14 20h1v1h-1zM17 20h2v1h-2zM22 20h1v1h-1zM24 20h1v1h-1zM26 20h2v1h-2zM30 20h1v1h-1zM34 20h2v1h-2zM39 20h1v1h-1zM41 20h1v1h-1zM0 21h1v1h-1zM2 21h2v1h-2zM6 21h3v1h-3zM10 21h3v1h-3zM15 21h1v1h-1zM18 21h1v1h-1zM20 21h1v1h-1zM24 21h2v1h-2zM27 21h1v1h-1zM29 21h3v1h-3zM34 21h1v1h-1zM37 21h2v1h-2zM40 21h5v1h-5zM1 22h1v1h-1zM3 22h1v1h-1zM7 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM16 22h1v1h-1zM21 22h1v1h-1zM24 22h2v1h-2zM27 22h1v1h-1zM29 22h1v1h-1zM31 22h1v1h-1zM34 22h2v1h-2zM37 22h4v1h-4zM44 22h1v1h-1zM1 23h1v1h-1zM4 23h1v1h-1zM9 23h1v1h-1zM12 23h1v1h-1zM14 23h1v1h-1zM17 23h1v1h-1zM19 23h2v1h-2zM22 23h1v1h-1zM24 23h1v1h-1zM29 23h4v1h-4zM34 23h1v1h-1zM37 23h2v1h-2zM40 23h5v1h-5zM0 24h1v1h-1zM3 24h1v1h-1zM6 24h1v1h-1zM8 24h3v1h-3zM14 24h3v1h-3zM19 24h1v1h-1zM21 24h1v1h-1zM24 24h1v1h-1zM26 24h1v1h-1zM28 24h3v1h-3zM32 24h1v1h-1zM35 24h2v1h-2zM41 24h4v1h-4zM3 25h1v1h-1zM8 25h6v1h-6zM18 25h1v1h-1zM20 25h1v1h-1zM23 25h1v1h-1zM26 25h1v1h-1zM28 25h3v1h-3zM34 25h1v1h-1zM36 25h2v1h-2zM2 26h1v1h-1zM5 26h2v1h-2zM8 26h1v1h-1zM10 26h3v1h-3zM14 26h4v1h-4zM22 26h1v1h-1zM24 26h1v1h-1zM28 26h1v1h-1zM32 26h4v1h-4zM41 26h3v1h-3zM0 27h6v1h-6zM7 27h2v1h-2zM13 27h3v1h-3zM17 27h1v1h-1zM20 27h1v1h-1zM22 27h1v1h-1zM24 27h3v1h-3zM29 27h1v1h-1zM33 27h1v1h-1zM35 27h1v1h-1zM37 27h1v1h-1zM39 27h2v1h-2zM43 27h1v1h-1zM0 28h1v1h-1zM5 28h3v1h-3zM9 28h1v1h-1zM11 28h3v1h-3zM16 28h1v1h-1zM18 28h1v1h-1zM24 28h3v1h-3zM30 28h2v1h-2zM34 28h1v1h-1zM37 28h3v1h-3zM42 28h3v1h-3zM0 29h1v1h-1zM2 29h3v1h-3zM7 29h1v1h-1zM9 29h2v1h-2zM14 29h2v1h-2zM17 29h5v1h-5zM27 29h1v1h-1zM29 29h1v1h-1zM32 29h1v1h-1zM35 29h2v1h-2zM44 29h1v1h-1zM0 30h1v1h-1zM2 30h2v1h-2zM7 30h3v1h-3zM11 30h1v1h-1zM14 30h1v1h-1zM17 30h1v1h-1zM20 30h1v1h-1zM22 30h1v1h-1zM26 30h1v1h-1zM34 30h1v1h-1zM36 30h1v1h-1zM38 30h1v1h-1zM40 30h1v1h-1zM42 30h3v1h-3zM0 31h4v1h-4zM5 31h3v1h-3zM11 31h1v1h-1zM13 31h3v1h-3zM21 31h1v1h-1zM23 31h1v1h-1zM28 31h1v1h-1zM30 31h1v1h-1zM32 31h1v1h-1zM34 31h6v1h-6zM41 31h3v1h-3zM0 32h1v1h-1zM3 32h1v1h-1zM6 32h1v1h-1zM10 32h1v1h-1zM13 32h2v1h-2zM17 32h4v1h-4zM22 32h2v1h-2zM26 32h1v1h-1zM34 32h1v1h-1zM38 32h1v1h-1zM41 32h3v1h-3zM0 33h1v1h-1zM2 33h1v1h-1zM7 33h1v1h-1zM13 33h2v1h-2zM16 33h1v1h-1zM19 33h1v1h-1zM23 33h1v1h-1zM28 33h1v1h-1zM31 33h1v1h-1zM33 33h1v1h-1zM37 33h3v1h-3zM42 33h1v1h-1zM44 33h1v1h-1zM1 34h1v1h-1zM12 34h1v1h-1zM16 34h4v1h-4zM31 34h1v1h-1zM33 34h1v1h-1zM35 34h3v1h-3zM41 34h1v1h-1zM0 35h2v1h-2zM3 35h7v1h-7zM14 35h3v1h-3zM21 35h2v1h-2zM24 35h4v1h-4zM29 35h1v1h-1zM31 35h1v1h-1zM33 35h2v1h-2zM36 35h1v1h-1zM38 35h2v1h-2zM44 35h1v1h-1zM3 36h1v1h-1zM9 36h1v1h-1zM11 36h2v1h-2zM14 36h1v1h-1zM17 36h2v1h-2zM20 36h1v1h-1zM22 36h1v1h-1zM24 36h1v1h-1zM27 36h2v1h-2zM33 36h2v1h-2zM38 36h1v1h-1zM43 36h2v1h-2zM1 37h1v1h-1zM3 37h1v1h-1zM5 37h3v1h-3zM9 37h1v1h-1zM13 37h1v1h-1zM18 37h1v1h-1zM23 37h2v1h-2zM27 37h1v1h-1zM30 37h1v1h-1zM34 37h2v1h-2zM38 37h2v1h-2zM42 37h1v1h-1zM3 38h1v1h-1zM5 38h3v1h-3zM9 38h1v1h-1zM12 38h2v1h-2zM15 38h2v1h-2zM19 38h1v1h-1zM21 38h1v1h-1zM23 38h2v1h-2zM29 38h1v1h-1zM31 38h1v1h-1zM36 38h6v1h-6zM44 38h1v1h-1zM3 39h1v1h-1zM5 39h3v1h-3zM9 39h1v1h-1zM12 39h3v1h-3zM17 39h4v1h-4zM24 39h1v1h-1zM29 39h2v1h-2zM34 39h1v1h-1zM37 39h4v1h-4zM42 39h3v1h-3zM1 40h1v1h-1zM3 40h1v1h-1zM9 40h1v1h-1zM11 40h2v1h-2zM16 40h2v1h-2zM21 40h3v1h-3zM26 40h1v1h-1zM28 40h4v1h-4zM33 40h2v1h-2zM36 40h1v1h-1zM38 40h1v1h-1zM40 40h1v1h-1zM43 40h1v1h-1zM0 41h2v1h-2zM3 41h7v1h-7zM12 41h1v1h-1zM14 41h1v1h-1zM16 41h3v1h-3zM21 41h2v1h-2zM24 41h1v1h-1zM26 41h2v1h-2zM30 41h3v1h-3zM35 41h2v1h-2zM41 41h2v1h-2zM44 41h1v1h-1zM1 42h1v1h-1zM11 42h2v1h-2zM14 42h3v1h-3zM18 42h1v1h-1zM20 42h1v1h-1zM22 42h1v1h-1zM26 42h1v1h-1zM28 42h1v1h-1zM30 42h1v1h-1zM37 42h1v1h-1zM39 42h4v1h-4zM44 42h1v1h-1zM0 43h1v1h-1zM2 43h2v1h-2zM8 43h1v1h-1zM11 43h2v1h-2zM15 43h4v1h-4zM21 43h1v1h-1zM24 43h1v1h-1zM27 43h2v1h-2zM31 43h1v1h-1zM34 43h4v1h-4zM43 43h1v1h-1zM2 44h2v1h-2zM5 44h1v1h-1zM7 44h2v1h-2zM10 44h2v1h-2zM19 44h1v1h-1zM21 44h1v1h-1zM23 44h1v1h-1zM27 44h1v1h-1zM29 44h1v1h-1zM31 44h2v1h-2zM34 44h1v1h-1zM38 44h1v1h-1zM41 44h4v1h-4z" fill="#111827"/></symbol>
+    <symbol id="bee" viewBox="0 0 64 48">
+      <ellipse cx="24" cy="13" rx="13" ry="8.5" fill="#fff" fill-opacity=".85" stroke="#1e3a8a" stroke-width="2" transform="rotate(-22 24 13)"/>
+      <ellipse cx="38" cy="11" rx="13" ry="8.5" fill="#fff" fill-opacity=".85" stroke="#1e3a8a" stroke-width="2" transform="rotate(-8 38 11)"/>
+      <path d="M12 30 L3 30 L12 26 Z" fill="#1e3a8a"/>
+      <ellipse cx="30" cy="30" rx="18" ry="12" fill="#f59e0b"/>
+      <g clip-path="url(#beeBodyClip)" stroke="#1e3a8a" stroke-width="4.5"><path d="M22 14v32M31 14v32M40 14v32"/></g>
+      <ellipse cx="30" cy="30" rx="18" ry="12" fill="none" stroke="#1e3a8a" stroke-width="2.5"/>
+      <circle cx="51" cy="29" r="7.5" fill="#1e3a8a"/>
+      <circle cx="53.5" cy="27.5" r="1.8" fill="#fff"/>
+      <path d="M51 22 q2 -8 7 -9 M55 24 q5 -5 9 -4" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="flash"></div>
+
+<!-- Timer: hidden until started (Space), hides itself after time is up -->
+<div id="timerPop" aria-label="Spelling clock">
+  <div class="timer-card">
+      <h2>Spelling Clock</h2>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 300 300" role="timer" aria-live="off">
+          <circle class="ring-bg" cx="150" cy="150" r="128" fill="none" stroke-width="22"/>
+          <circle id="ring" class="ring-fg" cx="150" cy="150" r="128" fill="none" stroke-width="22" stroke-linecap="round"
+                  transform="rotate(-90 150 150)" stroke-dasharray="804.25" stroke-dashoffset="0"/>
+          <text id="count" class="count" x="150" y="190" text-anchor="middle">10</text>
+          <text id="countNote" class="count-note" x="150" y="228" text-anchor="middle">Ready</text>
+        </svg>
+      </div>
+      <div class="t-btns">
+        <button id="bStart" title="Space">Start</button>
+        <button id="bPause" title="Space">Pause</button>
+        <button id="bReset" title="R">Reset</button>
+      </div>
+    </div>
+</div>
+
+<header>
+  <div class="logo"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22%23fffbeb%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%226%22/%3E%3Cellipse%20cx%3D%2250%22%20cy%3D%2256%22%20rx%3D%2222%22%20ry%3D%2215%22%20fill%3D%22%23f59e0b%22%20stroke%3D%22%231e3a8a%22%20stroke-width%3D%224%22/%3E%3Cpath%20d%3D%22M42%2042V70M54%2042V70%22%20stroke%3D%22%231e3a8a%22%20stroke-width%3D%225%22/%3E%3Ccircle%20cx%3D%2276%22%20cy%3D%2252%22%20r%3D%229%22%20fill%3D%22%231e3a8a%22/%3E%3Cellipse%20cx%3D%2244%22%20cy%3D%2236%22%20rx%3D%2214%22%20ry%3D%229%22%20fill%3D%22%23fff%22%20stroke%3D%22%231e3a8a%22%20stroke-width%3D%223%22/%3E%3C/svg%3E" alt="Honey Pot Spelling Bee logo"></div>
+  <div class="brand">
+    <div class="bb-title">The Honey Pot Bee <svg aria-hidden="true"><use href="#bee"/></svg></div>
+    <div class="bb-sub">Demo scoreboard · sample data only</div>
+  </div>
+  <div class="spot" id="spot" aria-live="polite">
+    <div class="spot-logo"><img id="spotLogo" alt=""></div>
+    <div class="spot-txt"><div class="spot-k">Your gift supports</div><div class="spot-n" id="spotName"></div><div class="spot-d" id="spotDesc"></div></div>
+  </div>
+  <div class="round-chip" id="roundChip">Round 1</div>
+</header>
+
+<main>
+  <!-- Honey pot -->
+  <section class="pot" aria-label="Honey pot — total raised">
+    <h2>The Honey Pot</h2>
+    <div class="pot-body">
+      <div class="pot-art">
+      <svg viewBox="0 0 320 390" role="img" aria-label="Honey jar filling up">
+        <defs>
+          <clipPath id="jarClip"><path d="M72 96 C42 116 32 164 32 214 L32 316 C32 352 58 372 94 372 L226 372 C262 372 288 352 288 316 L288 214 C288 164 278 116 248 96 Z"/></clipPath>
+          <linearGradient id="honeyGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient>
+        </defs>
+        <path d="M72 96 C42 116 32 164 32 214 L32 316 C32 352 58 372 94 372 L226 372 C262 372 288 352 288 316 L288 214 C288 164 278 116 248 96 Z" fill="rgba(255,255,255,.7)"/>
+        <g clip-path="url(#jarClip)">
+          <g id="honeyG" style="transform:translateY(372px)">
+            <g class="wave2"><path d="M-320 6 q40 -16 80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 V420 H-320Z" fill="#fcd34d"/></g>
+            <g class="wave1"><path d="M-320 12 q40 -16 80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 V420 H-320Z" fill="url(#honeyGrad)"/></g>
+            <circle class="bub" cx="80" cy="330" r="7" fill="#fff" fill-opacity=".6" style="animation-delay:0s"/>
+            <circle class="bub" cx="150" cy="350" r="5" fill="#fff" fill-opacity=".6" style="animation-delay:1.8s"/>
+            <circle class="bub" cx="230" cy="335" r="9" fill="#fff" fill-opacity=".6" style="animation-delay:3.2s"/>
+            <circle class="bub" cx="190" cy="360" r="4" fill="#fff" fill-opacity=".6" style="animation-delay:4.4s"/>
+          </g>
+        </g>
+        <path d="M72 96 C42 116 32 164 32 214 L32 316 C32 352 58 372 94 372 L226 372 C262 372 288 352 288 316 L288 214 C288 164 278 116 248 96 Z" fill="none" stroke="#1e3a8a" stroke-width="7"/>
+        <path d="M54 190 C52 220 52 262 56 300" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="8" stroke-linecap="round"/>
+        <!-- lid -->
+        <rect x="60" y="60" width="200" height="42" rx="12" fill="#1e3a8a" stroke="#172554" stroke-width="4"/>
+        <rect x="70" y="68" width="180" height="8" rx="4" fill="#fff" fill-opacity=".22"/>
+        <path d="M96 102 q0 28 10 30 q10 -2 10 -30Z" fill="#f59e0b" stroke="#1e3a8a" stroke-width="3"/>
+        <!-- label -->
+        <g transform="translate(70 186)">
+          <rect width="180" height="104" rx="18" fill="#fffbeb" stroke="#1e3a8a" stroke-width="5"/>
+          <use href="#bee" x="58" y="10" width="64" height="48"/>
+          <text x="90" y="86" text-anchor="middle" font-family="Lilita One, Arial Rounded MT Bold, Trebuchet MS, sans-serif" font-size="28" fill="#1e3a8a">Honey Pot</text>
+        </g>
+              <g id="drips"></g>
+        <g id="flyers"></g>
+      </svg>
+      </div>
+      <div class="pot-info">
+        <div>
+          <div class="pot-total" id="potTotal">$0</div>
+          <div class="pot-meta" id="potMeta" style="display:none"></div>
+        </div>
+        <div class="give inpot" aria-label="Scan to give">
+          <svg class="qrbox" role="img" aria-label="QR code to give to the Spelling Bee"><use href="#qr"/></svg>
+          <div class="give-text"><b class="give-title">Scan to sponsor your team!</b><span class="give-note"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leaderboard -->
+  <section aria-label="Team standings">
+    <div class="board-card">
+      <div class="board-head">
+        <h2>Standings</h2>
+      </div>
+      <ol id="board"></ol>
+    </div>
+  </section>
+</main>
+
+<!-- Sponsor ticker -->
+<div class="ticker" aria-label="Sponsors">
+  <div class="ticker-label"><svg aria-hidden="true"><use href="#bee"/></svg>Thank you to our sponsors</div>
+  <div class="track-wrap"><div class="track" id="track"></div></div>
+</div>
+
+<!-- Overlays -->
+<div class="ov" id="ovRound" role="alert">
+  <svg class="flyer" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true"><path class="trail" d="M -100 700 C 300 100, 600 900, 900 380 S 1500 120, 2100 520"/></svg>
+  <svg class="flybee" viewBox="0 0 64 48" aria-hidden="true"><use href="#bee"/></svg>
+  <div class="big" id="ovRoundText">Round 1</div>
+  <div class="msg" id="ovRoundMsg">Spellers, step up to the mic!</div>
+  <div class="hint-esc">Esc to close</div>
+</div>
+
+<div class="ov" id="ovCongrats" role="alert">
+  <canvas id="confetti"></canvas>
+  <div class="big">Congratulations!</div>
+  <div class="msg" id="ovCongratsMsg"></div>
+  <div class="give corner" aria-label="Scan to give"><svg class="qrbox" role="img" aria-label="QR code to give"><use href="#qr"/></svg><div class="give-text"><b class="give-title"></b><span class="give-note"></span></div></div>
+  <div class="hint-esc">Esc to close</div>
+</div>
+
+<div class="ov" id="ovSting" role="alert">
+  <div class="card">
+    <div class="kick">Stinger Round</div>
+    <div class="big">Sting!</div>
+    <div class="msg" id="ovStingMsg">One wrong letter and the stinger gets you.</div>
+  </div>
+  <div class="hint-esc" style="color:#fff">Esc to close</div>
+</div>
+
+<div class="ov" id="ovImpact" role="dialog" aria-label="Where your gift goes">
+  <h2>Where your gift goes</h2>
+  <div class="lede">Your support fuels local nonprofits that make our community stronger every day.</div>
+  <div class="row2">
+    <div class="stage" id="stageA"></div>
+    <div class="give side" aria-label="Scan to give"><svg class="qrbox" role="img" aria-label="QR code to give"><use href="#qr"/></svg><div class="give-text"><b class="give-title"></b><span class="give-note"></span></div></div>
+  </div>
+  <div class="dots" id="dotsA"></div>
+  <div class="hint-esc">Esc to close</div>
+</div>
+
+<div class="ov" id="ovSponsors" role="dialog" aria-label="Sponsor showcase">
+  <h2 id="showHead">Thank you to our sponsors</h2>
+  <div class="row2">
+    <div class="stage" id="stage"></div>
+    <div class="give side" aria-label="Scan to give"><svg class="qrbox" role="img" aria-label="QR code to give"><use href="#qr"/></svg><div class="give-text"><b class="give-title"></b><span class="give-note"></span></div></div>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div class="hint-esc">Esc to close</div>
+</div>
+
+<!-- Controls bar -->
+<div id="controls">
+  <div class="handle" id="handle" tabindex="0" role="button" aria-expanded="false" aria-controls="panel">
+    <span class="dot" id="dot"></span>
+    <span class="grow" id="syncText">Demo data (no sheet connected)</span>
+    <span class="tog" id="togText">Controls ▲</span>
+  </div>
+  <div class="panel" id="panel">
+    <div class="row">
+      <label for="csvUrl">Sheet link</label>
+      <input type="text" id="csvUrl" placeholder="Paste the sheet's normal link (shared: Anyone with the link) or the Published CSV link" autocomplete="off" spellcheck="false">
+      <button class="btn gold" id="bConnect">Connect</button>
+      <button class="btn" id="bDemo">Use demo data</button>
+    </div>
+    <div class="row">
+      <label>Overlays</label>
+      <select id="roundSel" aria-label="Round"><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Round 4</option><option>Final Round</option></select>
+      <button class="btn" data-ov="round">N · Round change</button>
+      <input type="text" id="msgIn" placeholder="Message (e.g. winning team)" style="width:230px" aria-label="Overlay message">
+      <button class="btn" data-ov="congrats">W · Congratulations</button>
+      <button class="btn" data-ov="sting">S · Sting!</button>
+      <button class="btn" data-ov="sponsors">H · Sponsor showcase</button>
+      <button class="btn" id="bShowRestart" title="Start the showcase over from the first team">A · Restart showcase</button>
+      <button class="btn" data-ov="impact">G · Where your gift goes</button>
+      <button class="btn" id="bClear">Esc · Clear</button>
+    </div>
+    <div class="row">
+      <label>Timer</label>
+      <button class="btn" data-t="start">Start</button>
+      <button class="btn" data-t="pause">Pause</button>
+      <button class="btn" data-t="reset">Reset / hide</button>
+      <span class="hint">Hidden until you start it (Space).</span>
+    </div>
+    <div class="row">
+      <label>Other</label>
+      <button class="btn" id="bMute">Sounds: on</button>
+      <button class="btn" id="bFull">Full screen</button>
+      <button class="btn" id="bSim">Add demo pledge</button>
+    </div>
+    <div class="hint">
+      Shortcuts: <kbd>Space</kbd> start/pause · <kbd>R</kbd> reset · <kbd>N</kbd> new round · <kbd>W</kbd> winner · <kbd>S</kbd> sting · <kbd>H</kbd> showcase · <kbd>A</kbd> restart showcase · <kbd>G</kbd> where your gift goes · <kbd>Esc</kbd> clear · <kbd>F</kbd> full screen · <kbd>C</kbd> this bar · <kbd>M</kbd> mute<br>
+      Team dollar amounts are used for ranking and the honey pot total only. They are never shown per team.
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================  EASY-EDIT SETTINGS  ===================== */
+const CONFIG = {
+  TIMER_SECONDS: 10,      // length of a spelling turn
+  SYNC_MS: 15000,         // how often to re-read the sheet
+  SHOW_GOAL: false,       // true = print the goal and percent under the total (off for a first event)
+  GOAL_DEFAULT: 10000,    // how full the jar looks: the jar is "full" at this amount (never printed unless SHOW_GOAL)
+  ROUND_MS: 6500,         // how long the Round overlay stays up
+  CONGRATS_MS: 12000,
+  STING_MS: 5500,
+  SPOT_MS: 7000,          // header "Your gift supports" rotation
+  IMPACT_MS: 7500,        // time per agency in the full-screen "Where your gift goes"
+  SHOWCASE_MS: 4500,      // time per sponsor slide
+  TEAM_SLIDE_MS: 13000,   // time per "Welcome to the hive" team slide (more to read)      // time per sponsor in the full-screen showcase
+  MAX_LOGOS_PER_TEAM: 1,  // logos shown on each team's row (the first sponsor listed wins)
+  TIMER_HIDE_MS: 6000,    // how long "Time!" stays up before the timer hides itself
+  QR_TITLE: 'Scan to sponsor your team!',
+  QR_NOTE: 'Put your team\'s name in the memo so they get full credit.'
+};
+
+/* Built-in sponsor logos (cropped from the team posters). Replace freely. */
+function demoLogo(text, bg, fg){
+  const w = Math.max(120, 28 + text.length * 17);
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="80" viewBox="0 0 ' + w + ' 80"><rect width="' + w + '" height="80" rx="14" fill="' + bg + '"/><text x="' + w/2 + '" y="52" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="30" fill="' + (fg || '#fff') + '">' + text + '</text></svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+const LOGOS = {};
+
+/* Made-up agencies for the demo */
+const DEFAULT_AGENCIES = [
+  { name: 'Neighborhood Food Pantry', logo: demoLogo('Food Pantry', '#15803d'),
+    short: 'Keeping local families fed.', desc: 'Stocks shelves and runs weekly pickups for neighbors who need a hand. Your gift helps buy fresh food.' },
+  { name: 'Youth Reading Program', logo: demoLogo('Reading', '#1d4ed8'),
+    short: 'Free tutoring and books for kids.', desc: 'Pairs volunteers with young readers and sends every child home with a book of their own.' },
+  { name: 'Senior Care Center', logo: demoLogo('Senior Care', '#9333ea'),
+    short: 'Meals and rides for older neighbors.', desc: 'Delivers meals and provides rides to appointments so older neighbors can stay independent.' },
+  { name: 'Family Support Network', logo: demoLogo('Family Network', '#b45309'),
+    short: 'Help when families need it most.', desc: 'Connects families with housing, utility, and emergency assistance in times of crisis.' }
+];
+
+/* Sponsors shown until the sheet provides its own "sponsor" rows.
+   No logo? A clean text badge is drawn. To use an image, add logo:'https://...' */
+const DEFAULT_SPONSORS = [
+  { name: 'Acme Bank',            tag: '', logo: demoLogo('Acme Bank', '#1d4ed8') },
+  { name: 'Sunrise Energy',       tag: '', logo: demoLogo('Sunrise Energy', '#ea580c') },
+  { name: 'Riverside Hospital',   tag: '', logo: demoLogo('Riverside', '#0f766e') },
+  { name: 'Main Street Market',   tag: '', logo: demoLogo('Main St Market', '#15803d') },
+  { name: 'Peachtree Printing',   tag: '', logo: demoLogo('Peachtree', '#be185d') },
+  { name: 'Oakwood Insurance',    tag: '', logo: demoLogo('Oakwood', '#475569') },
+  { name: 'Summit Credit Union',  tag: '', logo: demoLogo('Summit CU', '#7c3aed') },
+  { name: 'Bluebird Dental',      tag: '', logo: demoLogo('Bluebird', '#0284c7') }
+];
+
+/* Sample teams so the page works out of the box. */
+const TEAM_COLORS = {
+  'busy bees':'#5b21b6', 'honey badgers':'#0033a0', 'queen bees':'#d31f42', 'spelling stingers':'#7a8f3f',
+  'buzz lightyears':'#ea580c', 'hive five':'#15803d', 'the wordsmiths':'#0f766e', 'bumble spellers':'#0284c7'
+};
+const DEFAULT_TEAMS = [
+  { name: 'Busy Bees', amount: 320, tag: 'Always working, always winning!', sponsor: 'Acme Bank',
+    blurb: 'Meet the Busy Bees! Sponsored by Acme Bank, this crew has a plan for every word and plenty of team spirit in reserve. They are ready to deposit some serious spelling skill.',
+    memo: 'Busy Bees' },
+  { name: 'Honey Badgers', amount: 280, tag: 'Fearless spellers, fearless fundraisers!', sponsor: 'Sunrise Energy',
+    blurb: "Don't let the name fool you. The Honey Badgers, sponsored by Sunrise Energy, are powered up and ready to take on every tricky word the judges can find.",
+    memo: 'Honey Badgers' },
+  { name: 'Queen Bees', amount: 350, tag: 'Ruling the hive one word at a time!', sponsor: 'Riverside Hospital',
+    blurb: 'All hail the Queen Bees! Sponsored by Riverside Hospital, this team is calm under pressure and ready to prescribe a winning performance.',
+    memo: 'Queen Bees' },
+  { name: 'Spelling Stingers', amount: 240, tag: 'Small but mighty!', sponsor: 'Main Street Market',
+    blurb: 'The Spelling Stingers, sponsored by Main Street Market, have stocked up on vocabulary and are ready to serve up a fresh round of correct answers.',
+    memo: 'Spelling Stingers' },
+  { name: 'Buzz Lightyears', amount: 300, tag: 'To infinity and beyond the dictionary!', sponsor: 'Peachtree Printing',
+    blurb: 'Houston, we have a speller! The Buzz Lightyears, sponsored by Peachtree Printing, are putting their best words in print and aiming for the stars.',
+    memo: 'Buzz Lightyears' },
+  { name: 'Hive Five', amount: 260, tag: 'Five friends, one big buzz!', sponsor: 'Oakwood Insurance',
+    blurb: 'Give it up for the Hive Five, sponsored by Oakwood Insurance! They have every letter covered and are ready to protect their lead.',
+    memo: 'Hive Five' },
+  { name: 'The Wordsmiths', amount: 330, tag: 'Crafting victory letter by letter!', sponsor: 'Summit Credit Union',
+    blurb: 'The Wordsmiths, sponsored by Summit Credit Union, are climbing to the top one syllable at a time. Watch out for this team!',
+    memo: 'The Wordsmiths' },
+  { name: 'Bumble Spellers', amount: 220, tag: 'Bumbling? Never. Spelling? Always!', sponsor: 'Bluebird Dental',
+    blurb: 'Smile, the Bumble Spellers are here! Sponsored by Bluebird Dental, this team has plenty to grin about and plenty of words in the bank.',
+    memo: 'Bumble Spellers' }
+];
+
+/* =====================  STATE & HELPERS  ===================== */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const fmt$ = n => '$' + Math.round(n).toLocaleString('en-US');
+const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store = {
+  get(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } },
+  set(k,v){ try { localStorage.setItem(k, v); } catch(e){} }
+};
+
+let teams = DEFAULT_TEAMS.map(t => ({...t}));
+let sponsors = DEFAULT_SPONSORS.map(s => ({...s}));
+let agencies = DEFAULT_AGENCIES.map(a => ({...a}));
+let goal = CONFIG.GOAL_DEFAULT;
+let totalOverride = null;
+let round = 'Round 1';
+let csvUrl = '';
+let firstSync = true;
+let lastOvKey = 'none';
+let lastTimerCmd = null;
+let shownTotal = 0;
+
+/* =====================  AUDIO (timer beeps)  ===================== */
+let actx = null, muted = false;
+function audio(){
+  if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
+  if (actx && actx.state === 'suspended') actx.resume();
+  return actx;
+}
+function tone(freq, dur, type = 'sine', vol = .25){
+  if (muted) return; const c = audio(); if (!c) return;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.value = freq; o.connect(g); g.connect(c.destination);
+  const t = c.currentTime; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+  o.start(t); o.stop(t + dur + .02);
+}
+const sfx = {
+  tick: () => tone(880, .12, 'square', .12),
+  buzz: () => { tone(160, .9, 'sawtooth', .3); tone(120, .9, 'square', .2); },
+  round: () => { [523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,.28,'triangle',.25),i*140)); },
+  cheer: () => { [523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.35,'triangle',.25),i*120)); },
+  swarm: big => {   // a bee flies past: loud, clear buzzing with a wing-beat wobble
+    if (muted) return; const c = audio(); if (!c) return;
+    const t = c.currentTime, dur = big ? 2.6 : 1.6;
+    const comp = c.createDynamicsCompressor(); comp.threshold.value = -24; comp.ratio.value = 6;
+    const out = c.createGain(); out.gain.setValueAtTime(.0001, t);
+    out.gain.exponentialRampToValueAtTime(.4, t + .12); out.gain.setValueAtTime(.4, t + dur - .6); out.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    const bp = c.createBiquadFilter(); bp.type = 'peaking'; bp.frequency.value = 700; bp.Q.value = .7; bp.gain.value = 9;
+    const trem = c.createGain(); trem.gain.value = .75;
+    const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 33; lg.gain.value = .25; lfo.connect(lg); lg.connect(trem.gain);
+    [[176, 'sawtooth', .55], [185, 'sawtooth', .55], [352, 'sawtooth', .3], [528, 'square', .12]].forEach(([f, type, v]) => {
+      const o = c.createOscillator(), g = c.createGain(); o.type = type;
+      o.frequency.setValueAtTime(f * .9, t); o.frequency.linearRampToValueAtTime(f * 1.16, t + dur * .45); o.frequency.linearRampToValueAtTime(f * .95, t + dur);
+      g.gain.value = v; o.connect(g); g.connect(trem); o.start(t); o.stop(t + dur + .05);
+    });
+    lfo.start(t); lfo.stop(t + dur + .05);
+    trem.connect(bp); bp.connect(out); out.connect(comp); comp.connect(c.destination);
+  },
+  sting: () => { tone(220,.25,'sawtooth',.3); setTimeout(()=>tone(165,.5,'sawtooth',.3),200); }
+};
+
+/* =====================  CSV PARSING  ===================== */
+function parseCSV(text){
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){
+      if (c === '"'){ if (text[i+1] === '"'){ f += '"'; i++; } else q = false; }
+      else f += c;
+    } else if (c === '"') q = true;
+    else if (c === ','){ row.push(f); f = ''; }
+    else if (c === '\n' || c === '\r'){
+      if (c === '\r' && text[i+1] === '\n') i++;
+      row.push(f); rows.push(row); row = []; f = '';
+    } else f += c;
+  }
+  if (f.length || row.length){ row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim() !== ''));
+}
+const money = v => { const n = parseFloat(String(v).replace(/[^0-9.\-]/g, '')); return isFinite(n) ? n : 0; };
+
+function agencyLogoFor(name){
+  const n = name.toLowerCase();
+  const m = DEFAULT_AGENCIES.find(a => a.name.toLowerCase().split(/\s+/).filter(w => w.length > 4).some(w => n.includes(w)));
+  return m ? m.logo : '';
+}
+function logoFor(name){
+  const n = name.toLowerCase();
+  for (const k of Object.keys(LOGOS)) if (n.includes(k)) return LOGOS[k];
+  return '';
+}
+
+function applyRows(rows){
+  const t = [], s = [], ag = [], ctl = {}; let g = null, tot = null;
+  for (const r of rows){
+    const type = (r[0] || '').trim().toLowerCase();
+    const name = (r[1] || '').trim(), val = (r[2] || '').trim(), extra = (r[3] || '').trim();
+    if (!type || type === 'type') continue;
+    if (type === 'team' && name) t.push({ name, amount: money(val), tag: extra, sponsor: (r[4] || '').trim(), color: /^#[0-9a-f]{3,8}$/i.test((r[5] || '').trim()) ? r[5].trim() : '', blurb: (r[6] || '').trim(), memo: (r[7] || '').trim() });
+    else if (type === 'sponsor' && name) s.push({ name, tag: val, logo: extra || logoFor(name) });
+    else if (type === 'agency' && name) ag.push({ name, short: val, desc: val, logo: extra || agencyLogoFor(name) });
+    else if (type === 'goal') g = money(val || name);
+    else if (type === 'total') tot = money(val || name);
+    else if (type === 'control' && name) ctl[name.toLowerCase()] = val;
+  }
+  if (!t.length) throw new Error('No "team" rows found in the sheet');
+  teams = t;
+  if (s.length) sponsors = s;
+  if (ag.length) agencies = ag;
+  if (g && g > 0) goal = g;
+  totalOverride = tot;
+  renderAll();
+  handleControls(ctl);
+}
+
+/* =====================  SYNC  ===================== */
+function normalizeUrl(u){
+  u = u.trim();
+  if (!u) return '';
+  if (/\/spreadsheets\/d\/e\//.test(u)){
+    u = u.replace(/\/pubhtml/, '/pub');
+    if (!/output=csv/.test(u)) u += (u.includes('?') ? '&' : '?') + 'output=csv';
+    return u;
+  }
+  const m = u.match(/spreadsheets\/d\/([A-Za-z0-9_-]+)/);
+  if (m){
+    const gid = (u.match(/[#&?]gid=(\d+)/) || [])[1];
+    return 'gviz:' + m[1] + ':' + (gid || '');
+  }
+  return u;
+}
+let syncing = false, syncTimer = null;
+/* Reads the sheet with a <script> tag (no CORS needed). Sheet must be shared: Anyone with the link can view. */
+function gvizRows(id, gid){
+  return new Promise((resolve, reject) => {
+    const cb = '__gviz' + Date.now();
+    const sc = document.createElement('script');
+    const cleanup = () => { clearTimeout(timer); try { delete window[cb]; } catch(e){ window[cb] = undefined; } sc.remove(); };
+    const timer = setTimeout(() => { cleanup(); reject(new Error('No answer from Google. Share the sheet as Anyone with the link: Viewer')); }, 12000);
+    window[cb] = resp => {
+      cleanup();
+      if (!resp || resp.status !== 'ok'){ reject(new Error('Google said: ' + (resp && resp.errors && resp.errors[0] ? resp.errors[0].message : 'not allowed'))); return; }
+      resolve(resp.table.rows.map(r => (r.c || []).map(c => (c && c.v != null) ? String(c.v) : '')));
+    };
+    sc.onerror = () => { cleanup(); reject(new Error('Could not load from Google')); };
+    sc.src = 'https://docs.google.com/spreadsheets/d/' + id + '/gviz/tq?tqx=out:json;responseHandler:' + cb + '&headers=0&_=' + Date.now() + (gid ? '&gid=' + gid : '');
+    document.head.appendChild(sc);
+  });
+}
+function setStatus(kind, text){
+  $('#dot').className = 'dot ' + (kind || '');
+  $('#syncText').textContent = text;
+}
+async function sync(){
+  if (!csvUrl || syncing) return;
+  syncing = true;
+  try {
+    let rows;
+    if (csvUrl.indexOf('gviz:') === 0){
+      const p = csvUrl.split(':');           // gviz:<sheetId>:<gid>
+      rows = await gvizRows(p[1], p[2]);
+    } else {
+      const sep = csvUrl.includes('?') ? '&' : '?';
+      let res;
+      try { res = await fetch(csvUrl + sep + '_=' + Date.now(), { credentials: 'omit', referrerPolicy: 'no-referrer' }); }
+      catch (e) { throw new Error('Could not reach the published link. Paste the sheet\'s normal link instead (share it as Anyone with the link: Viewer)'); }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      if (/^\s*<(!doctype|html)/i.test(text)) throw new Error('Got a web page, not CSV. Re-publish as CSV.');
+      rows = parseCSV(text);
+    }
+    applyRows(rows);
+    firstSync = false;
+    setStatus('ok', 'Last synced: ' + new Date().toLocaleTimeString() + '  (checks every ' + CONFIG.SYNC_MS/1000 + 's)');
+  } catch (e){
+    setStatus('err', 'Sync problem: ' + e.message + '. Showing last good data, retrying…');
+  } finally { syncing = false; }
+}
+function connect(url){
+  clearInterval(syncTimer);
+  csvUrl = normalizeUrl(url);
+  firstSync = true;
+  if (!csvUrl){
+    store.set('uwbee_csv', '');
+    teams = DEFAULT_TEAMS.map(t => ({...t})); sponsors = DEFAULT_SPONSORS.map(s => ({...s})); agencies = DEFAULT_AGENCIES.map(a => ({...a}));
+    goal = CONFIG.GOAL_DEFAULT; totalOverride = null; renderAll();
+    setStatus('', 'Demo data (no sheet connected)');
+    return;
+  }
+  store.set('uwbee_csv', url.trim());
+  setStatus('', 'Connecting…');
+  sync();
+  syncTimer = setInterval(sync, CONFIG.SYNC_MS);
+}
+
+/* =====================  RENDERING  ===================== */
+const POT_TOP = 112, POT_BOTTOM = 372;
+function total(){ return totalOverride != null ? totalOverride : teams.reduce((a,t) => a + t.amount, 0); }
+
+let potSeen = false;
+function renderPot(){
+  const tot = total(), pct = clamp(tot / goal, 0, 1);
+  const y = POT_BOTTOM - pct * (POT_BOTTOM - POT_TOP);
+  $('#honeyG').style.transform = 'translateY(' + y + 'px)';
+  const meta = $('#potMeta');
+  if (CONFIG.SHOW_GOAL){
+    meta.textContent = tot >= goal ? 'Goal reached! 🎉 (' + fmt$(goal) + ')' : 'of ' + fmt$(goal) + ' goal · ' + Math.round(pct * 100) + '%';
+    meta.style.display = '';
+  } else { meta.textContent = ''; meta.style.display = 'none'; }
+  // count-up
+  const el = $('#potTotal'), from = shownTotal, to = tot, t0 = performance.now();
+  if (from !== to){
+    el.classList.remove('bump'); void el.offsetWidth; if (to > from) el.classList.add('bump');
+    if (to > from && potSeen && (!firstSync || !csvUrl)) potShake(to - from, y);
+    const step = now => {
+      const k = clamp((now - t0) / 1200, 0, 1), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = fmt$(from + (to - from) * e);
+      if (k < 1) requestAnimationFrame(step); else shownTotal = to;
+    };
+    requestAnimationFrame(step); shownTotal = to;
+  } else el.textContent = fmt$(to);
+  potSeen = true;
+}
+function potShake(gift, surfaceY){
+  const art = $('.pot-art'); if (!art) return;
+  art.classList.remove('shake', 'big'); void art.offsetWidth;
+  art.classList.add('shake'); if (gift >= 100) art.classList.add('big');
+  sfx.swarm(gift >= 100);
+  potDrip(gift, surfaceY);
+  swarmBurst(gift);
+  setTimeout(() => art.classList.remove('shake', 'big'), 1400);
+}
+
+/* ---------- honey drips into the skep, with a little splash ---------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+function potDrip(gift, surfaceY){
+  const box = $('#drips'); if (!box || !box.animate) return;
+  const n = clamp(Math.round(gift / 50), 1, 6), land = Math.max((surfaceY || 300) + 8, 150);
+  for (let k = 0; k < n; k++) setTimeout(() => {
+    const x = 106 + (Math.random() * 8 - 4);
+    const d = document.createElementNS(SVGNS, 'path');
+    d.setAttribute('d', 'M0 -15 C8 -3 10 4 0 10 C-10 4 -8 -3 0 -15Z');
+    d.setAttribute('fill', 'url(#honeyGrad)'); d.setAttribute('stroke', '#b45309'); d.setAttribute('stroke-width', '1.6');
+    box.appendChild(d);
+    const a = d.animate([
+      { transform: 'translate(' + x + 'px,124px) scale(.25,.25)', opacity: 0 },
+      { transform: 'translate(' + x + 'px,134px) scale(1,.8)', opacity: 1, offset: .16 },
+      { transform: 'translate(' + x + 'px,' + (land - 6) + 'px) scale(.8,1.4)', opacity: 1 }
+    ], { duration: 500 + (land - 120) * 1.8, easing: 'cubic-bezier(.45,0,.85,.55)', fill: 'forwards' });
+    a.onfinish = () => { d.remove(); splash(box, x, land); };
+  }, k * 230);
+}
+function splash(box, x, y){
+  const r = document.createElementNS(SVGNS, 'ellipse');
+  r.setAttribute('fill', 'none'); r.setAttribute('stroke', '#fff7d6'); r.setAttribute('stroke-width', '3');
+  box.appendChild(r);
+  r.animate([
+    { transform: 'translate(' + x + 'px,' + y + 'px) scale(.2,.2)', opacity: .95 },
+    { transform: 'translate(' + x + 'px,' + y + 'px) scale(1,1)', opacity: 0 }
+  ], { duration: 750, easing: 'ease-out', fill: 'forwards' }).onfinish = () => r.remove();
+  r.setAttribute('rx', '40'); r.setAttribute('ry', '8');
+  for (let k = 0; k < 4; k++){
+    const c = document.createElementNS(SVGNS, 'circle');
+    c.setAttribute('r', String(2 + Math.random() * 2)); c.setAttribute('fill', '#fbbf24');
+    box.appendChild(c);
+    const dx = (k - 1.5) * 14 + (Math.random() * 6 - 3), up = 18 + Math.random() * 14;
+    c.animate([
+      { transform: 'translate(' + x + 'px,' + y + 'px)', opacity: 1 },
+      { transform: 'translate(' + (x + dx * .6) + 'px,' + (y - up) + 'px)', opacity: 1, offset: .45 },
+      { transform: 'translate(' + (x + dx) + 'px,' + (y + 2) + 'px)', opacity: 0 }
+    ], { duration: 520, easing: 'ease-out', fill: 'forwards' }).onfinish = () => c.remove();
+  }
+}
+
+/* ---------- bees buzzing around the skep (always a few; more when a gift arrives) ---------- */
+const BEE_SVG = '<g class="fb"><g class="wing"><ellipse cx="-3" cy="-9" rx="9" ry="5.5" fill="#fff" fill-opacity=".9" stroke="#1e3a8a" stroke-width="1.6" transform="rotate(-20 -3 -9)"/></g>' +
+  '<g class="wing" style="animation-delay:.04s"><ellipse cx="6" cy="-9" rx="8" ry="5" fill="#fff" fill-opacity=".9" stroke="#1e3a8a" stroke-width="1.6" transform="rotate(10 6 -9)"/></g>' +
+  '<path d="M-11 0 L-17 -1.5 L-17 1.5 Z" fill="#1e3a8a"/><ellipse cx="0" cy="0" rx="12" ry="7.5" fill="#f59e0b" stroke="#1e3a8a" stroke-width="1.8"/>' +
+  '<path d="M-5 -6.6 V6.6 M2 -7 V7" stroke="#1e3a8a" stroke-width="3.2"/><circle cx="13" cy="-1" r="5.2" fill="#1e3a8a"/><circle cx="14.6" cy="-2.4" r="1.4" fill="#fff"/></g>';
+const IDLE_BEES = [
+  { cx: 160, cy: 170, rx: 150, ry: 96,  w1: .55, w2: .80, p: 0 },
+  { cx: 160, cy: 250, rx: 160, ry: 110, w1: .40, w2: .65, p: 2.1 },
+  { cx: 160, cy: 118, rx: 125, ry: 62,  w1: .90, w2: 1.30, p: 4.0 },
+  { cx: 160, cy: 310, rx: 150, ry: 62,  w1: .35, w2: .70, p: 5.2 }
+];
+let flyers = [], flyRAF = 0;
+function addFlyer(cfg){
+  const g = document.createElementNS(SVGNS, 'g'); g.innerHTML = BEE_SVG;
+  const f = Object.assign({ g, born: performance.now(), sc: 1.15 }, cfg); $('#flyers').appendChild(g); flyers.push(f); return f;
+}
+function swarmBurst(gift){
+  const n = clamp(3 + Math.floor(gift / 50), 3, 9), now = performance.now();
+  for (let k = 0; k < n; k++) addFlyer({ burst: true, born: now + k * 140, life: 3600 + Math.random() * 1400,
+    a0: Math.random() * 6.28, w: (Math.random() < .5 ? -1 : 1) * (1.6 + Math.random() * 1.2), R: 120 + Math.random() * 60, sc: .95 + Math.random() * .3 });
+}
+function flyLoop(now){
+  const t = now / 1000;
+  flyers = flyers.filter(f => {
+    let x, y, vis = 1;
+    if (f.burst){
+      const age = now - f.born; if (age < 0){ f.g.setAttribute('opacity', 0); return true; }
+      const u = age / f.life; if (u >= 1){ f.g.remove(); return false; }
+      const env = Math.sin(Math.PI * u), a = f.a0 + f.w * age / 1000;
+      x = 160 + f.R * Math.cos(a) * env;                 // leaves from the lid, loops around the jar, comes home
+      y = 70 + ((220 + 130 * Math.sin(a)) - 70) * env;
+      vis = Math.min(1, env * 3);
+    } else {
+      x = f.cx + f.rx * Math.sin(f.w1 * t + f.p); y = f.cy + f.ry * Math.sin(f.w2 * t + f.p * 1.7);
+    }
+    x += Math.sin(t * 31 + (f.p || f.a0 || 0)) * 1.1; y += Math.cos(t * 37 + (f.p || f.a0 || 0)) * 1.1;   // buzzing jitter
+    const px = f.px == null ? x : f.px, py = f.py == null ? y : f.py, dx = x - px;
+    if (Math.abs(dx) > .15) f.dir = dx < 0 ? -1 : 1;
+    f.px = x; f.py = y;
+    const tilt = clamp((y - py) * 6, -25, 25) * (f.dir || 1);
+    f.g.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + tilt.toFixed(1) + ') scale(' + ((f.dir || 1) * f.sc) + ' ' + f.sc + ')');
+    f.g.setAttribute('opacity', vis);
+    return true;
+  });
+  flyRAF = requestAnimationFrame(flyLoop);
+}
+function startBees(){
+  if (!$('#flyers') || flyRAF) return;
+  IDLE_BEES.forEach(c => addFlyer(c));
+  flyRAF = requestAnimationFrame(flyLoop);
+}
+
+const SHIELD = '<svg viewBox="0 0 24 28" aria-hidden="true"><path d="M12 1 2 5v8c0 6.5 4.2 11.3 10 14 5.8-2.7 10-7.5 10-14V5z" fill="#1e3a8a" stroke="#f59e0b" stroke-width="2"/><path d="m12 7 1.8 3.8 4.2.5-3.1 2.8.9 4.1L12 16.1 8.2 18.2l.9-4.1L6 11.3l4.2-.5z" fill="#fde68a"/></svg>';
+function chipsFor(spec){
+  if (!spec) return '';
+  return String(spec).split(/\s*(?:&|\+|,|\band\b)\s*/i).filter(Boolean).slice(0, CONFIG.MAX_LOGOS_PER_TEAM).map(n => {
+    const logo = logoFor(n) || (sponsors.find(s => s.name.toLowerCase() === n.toLowerCase()) || {}).logo;
+    if (logo) return '<div class="chip" title="' + esc(n) + '"><img src="' + esc(logo) + '" alt="' + esc(n) + '"></div>';
+    if (/police|sheriff|fire|ems/i.test(n)) return '<div class="chip txt" title="' + esc(n) + '">' + SHIELD + '<span>' + esc(n) + '</span></div>';
+    return '<div class="chip txt"><span>' + esc(n) + '</span></div>';
+  }).join('');
+}
+function fitNames(){
+  document.querySelectorAll('#board .nm').forEach(n => {
+    n.style.fontSize = '';
+    let size = parseFloat(getComputedStyle(n).fontSize), guard = 0;
+    while (n.scrollWidth > n.clientWidth + 1 && size > 12 && guard++ < 30){ size *= .94; n.style.fontSize = size + 'px'; }
+  });
+}
+window.addEventListener('resize', () => requestAnimationFrame(fitNames));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
+const rowEls = new Map(); let lastRank = new Map();
+function renderBoard(){
+  const ul = $('#board');
+  const ranked = [...teams].sort((a, b) => b.amount - a.amount);
+  ranked.forEach(t => { t.rank = 1 + ranked.filter(o => o.amount > t.amount).length; });
+  const tiedLead = ranked.filter(t => t.rank === 1).length > 1;
+  const allTied = ranked.length > 1 && ranked.every(t => t.amount === ranked[0].amount);
+  const before = new Map(); rowEls.forEach((li, k) => before.set(k, li.getBoundingClientRect().top));
+  const keep = new Set(ranked.map(t => t.name));
+  rowEls.forEach((li, k) => { if (!keep.has(k)){ li.remove(); rowEls.delete(k); } });
+  const newRank = new Map();
+  ranked.forEach(t => {
+    let li = rowEls.get(t.name);
+    if (!li){
+      li = document.createElement('li'); li.dataset.name = t.name;
+      li.innerHTML = '<div class="badge"></div><div class="who"><div class="nm"></div><div class="tg"></div></div>' +
+        '<div class="flag"><svg aria-hidden="true"><use href="#bee"/></svg><span></span></div><div class="chips"></div>';
+      rowEls.set(t.name, li);
+    }
+    const bd = li.querySelector('.badge');
+    if (allTied){ if (!bd.querySelector('svg')) bd.innerHTML = '<svg viewBox="0 0 64 48" style="width:72%;height:72%" aria-hidden="true"><use href="#bee"/></svg>'; }
+    else bd.textContent = t.rank;
+    li.querySelector('.nm').textContent = t.name;
+    li.querySelector('.tg').textContent = t.tag || '';
+    li.querySelector('.flag span').textContent = tiedLead ? 'Tied for the lead' : 'In the lead';
+    li.classList.toggle('lead', t.rank === 1 && !allTied);
+    li.style.setProperty('--tc', t.color || TEAM_COLORS[t.name.toLowerCase()] || '');
+    const chipHTML = chipsFor(t.sponsor);
+    const cc = li.querySelector('.chips');
+    if (cc.dataset.sig !== chipHTML){ cc.innerHTML = chipHTML; cc.dataset.sig = chipHTML; }
+    const was = lastRank.get(t.name);
+    if (was && t.rank < was && !firstSync){ li.classList.remove('rose'); void li.offsetWidth; li.classList.add('rose'); }
+    newRank.set(t.name, t.rank);
+    ul.appendChild(li);
+  });
+  lastRank = newRank;
+  fitNames();
+  // FLIP: glide rows to their new spots
+  rowEls.forEach((li, k) => {
+    const b = before.get(k); if (b == null) return;
+    const d = b - li.getBoundingClientRect().top;
+    if (Math.abs(d) > 1 && li.animate) li.animate([{ transform: 'translateY(' + d + 'px)' }, { transform: 'none' }], { duration: 900, easing: 'cubic-bezier(.3,.7,.2,1)' });
+  });
+}
+
+function pillHTML(s){
+  return '<div class="pill" title="' + esc(s.name) + '">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.name) + '">' : '<span>' + esc(s.name) + '</span>') + '</div>';
+}
+let sponsorSig = '';
+function renderTicker(){
+  const sig = JSON.stringify(sponsors); if (sig === sponsorSig) return; sponsorSig = sig;
+  const one = sponsors.map(pillHTML).join('');
+  const tr = $('#track');
+  // repeat enough times so the loop is seamless on wide screens
+  const reps = Math.max(2, Math.ceil(2400 / Math.max(300, sponsors.length * 190)));
+  const half = one.repeat(reps);
+  tr.innerHTML = half + half;
+  tr.style.setProperty('--dur', Math.max(25, sponsors.length * reps * 6) + 's');
+}
+function renderRound(){ $('#roundChip').textContent = round; }
+let spotI = 0, spotTimer = null, agencySig = '';
+function showSpot(){
+  const a = agencies[spotI % agencies.length]; if (!a) return;
+  $('#spotName').textContent = a.name; $('#spotDesc').textContent = a.short || a.desc;
+  const im = $('#spotLogo'); im.alt = a.name; if (a.logo) { im.src = a.logo; im.style.display = ''; } else im.style.display = 'none';
+}
+function nextSpot(){
+  const sp = $('#spot'); sp.classList.add('fade');
+  setTimeout(() => { spotI++; showSpot(); sp.classList.remove('fade'); }, 450);
+}
+function renderSpot(){
+  const sig = JSON.stringify(agencies); if (sig === agencySig) return; agencySig = sig;
+  clearInterval(spotTimer); spotI = 0; showSpot();
+  if (agencies.length > 1) spotTimer = setInterval(nextSpot, CONFIG.SPOT_MS);
+}
+function renderAll(){ renderPot(); renderBoard(); renderTicker(); renderRound(); renderSpot(); }
+
+/* =====================  OVERLAYS  ===================== */
+let ovTimer = null, showcaseTimer = null, confettiRAF = 0;
+const OVS = { round: '#ovRound', congrats: '#ovCongrats', sting: '#ovSting', sponsors: '#ovSponsors', impact: '#ovImpact' };
+function hideOverlays(){
+  clearTimeout(ovTimer); clearInterval(showcaseTimer); clearTimeout(showcaseTimer); cancelAnimationFrame(confettiRAF);
+  Object.values(OVS).forEach(s => $(s).classList.remove('show'));
+}
+function showOverlay(type, opts = {}){
+  if (!OVS[type]) return;
+  hideOverlays(); audio();
+  const el = $(OVS[type]); let ms = 0;
+  if (type === 'round'){
+    if (opts.round) { round = opts.round; renderRound(); }
+    $('#ovRoundText').textContent = round;
+    $('#ovRound').classList.toggle('final', /final/i.test(round));
+    $('#ovRoundMsg').textContent = opts.message || (/final/i.test(round) ? 'The final round. Spell it like you mean it!' : 'Spellers, step up to the mic!');
+    sfx.round(); ms = CONFIG.ROUND_MS;
+  } else if (type === 'congrats'){
+    $('#ovCongratsMsg').textContent = opts.message || '';
+    startConfetti(); sfx.cheer(); ms = CONFIG.CONGRATS_MS;
+  } else if (type === 'sting'){
+    $('#ovStingMsg').textContent = opts.message || 'One wrong letter and the stinger gets you.';
+    sfx.sting(); ms = CONFIG.STING_MS;
+  } else if (type === 'sponsors'){
+    startShowcase();
+  } else if (type === 'impact'){
+    startImpact();
+  }
+  el.classList.add('show');
+  if (ms) ovTimer = setTimeout(hideOverlays, ms);
+}
+function teamColor(tm){ return tm.color || TEAM_COLORS[tm.name.toLowerCase()] || '#1e3a8a'; }
+function showcaseSlides(){
+  /* One "Welcome to the hive" slide per team, in sheet order. Sponsors appear on their team's slide
+     (no stand-alone logo slides). A team with no blurb still gets a simple slide. */
+  return teams.map(tm => ({ kind: 'team', tm }));
+}
+function sponsorParts(str){ return String(str || '').split(/\s*(?:&|\+|,|\band\b)\s*/i).map(x => x.trim()).filter(Boolean).slice(0, 3); }
+function sponsorLogo(name){ return logoFor(name) || (sponsors.find(s => s.name.toLowerCase() === name.toLowerCase()) || {}).logo || ''; }
+let showcasePos = parseInt(store.get('uwbee_showpos') || '0', 10) || 0;   // slide to show next time the showcase opens
+function fitText(box, minPx){          // shrink the text inside box until it fits the box's height
+  const txt = box.firstElementChild, cs = getComputedStyle(box);
+  const avail = box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  box.style.fontSize = ''; let size = parseFloat(cs.fontSize), guard = 0;
+  while (txt.offsetHeight > avail && size > minPx && guard++ < 60){ size *= .95; box.style.fontSize = size + 'px'; }
+}
+function startShowcase(restart){
+  const list = showcaseSlides();
+  if (!list.length) return;
+  let i = restart ? 0 : (showcasePos % list.length);       // pick up where it left off
+  $('#dots').innerHTML = list.map(() => '<i></i>').join('');
+  const draw = () => {
+    i = i % list.length;
+    showcasePos = i; store.set('uwbee_showpos', String(i)); // remember the slide on screen (resumes here if stopped)
+    const sl = list[i], st = $('#stage');
+    st.classList.remove('swap'); void st.offsetWidth; st.classList.add('swap');
+    st.classList.add('team');
+    const tm = sl.tm, parts = sponsorParts(tm.sponsor);
+    const chips = parts.map(n => { const lg = sponsorLogo(n);
+      return lg ? '<img src="' + esc(lg) + '" alt="' + esc(n) + '">' : '<span class="tltxt">' + esc(n) + '</span>'; }).join('');
+    const blurb = tm.blurb || ('Sponsored by ' + (parts.join(' and ') || 'our community') + '! Let\'s hear it for ' + tm.name + '!');
+    $('#showHead').textContent = 'Welcome to the hive!';
+    st.style.setProperty('--tc', teamColor(tm));
+    st.innerHTML = '<div class="tslide"><div class="tband"><div class="tn">' + esc(tm.name) + '</div>' +
+      (chips ? '<div class="tl">' + chips + '</div>' : '') + '</div>' +
+      '<div class="tbody"><div class="tbt">' + esc(blurb) + '</div></div>' +
+      '<div class="tmemo">Scan the QR code and put <b>' + esc((tm.memo || tm.name).toUpperCase()) + '</b> in the memo so they get full credit!</div></div>';
+    requestAnimationFrame(() => { const bx = st.querySelector('.tbody'); if (bx) fitText(bx, 16); });
+    $$('#dots i').forEach((d, k) => d.classList.toggle('on', k === i));
+    i++;
+    showcaseTimer = setTimeout(draw, CONFIG.TEAM_SLIDE_MS);
+  };
+  draw();
+}
+function startImpact(){
+  const list = agencies.length ? agencies : DEFAULT_AGENCIES; let i = 0;
+  $('#dotsA').innerHTML = list.map(() => '<i></i>').join('');
+  const draw = () => {
+    const a = list[i % list.length], st = $('#stageA');
+    st.classList.remove('swap'); void st.offsetWidth; st.classList.add('swap');
+    st.innerHTML = (a.logo ? '<img class="lg" src="' + esc(a.logo) + '" alt="">' : '') +
+      '<div class="an">' + esc(a.name) + '</div><div class="ad">' + esc(a.desc || a.short) + '</div>';
+    $$('#dotsA i').forEach((d, k) => d.classList.toggle('on', k === i % list.length));
+    i++;
+  };
+  draw(); showcaseTimer = setInterval(draw, CONFIG.IMPACT_MS);
+}
+function startConfetti(){
+  const cv = $('#confetti'), cx = cv.getContext('2d');
+  const W = cv.width = innerWidth, H = cv.height = innerHeight;
+  const cols = ['#1e3a8a', '#ffffff', '#fde68a', '#172554', '#fbbf24', '#b45309'];
+  const bits = Array.from({ length: 170 }, () => ({
+    x: Math.random() * W, y: -Math.random() * H, r: 8 + Math.random() * 14, vy: 2 + Math.random() * 4,
+    vx: -1.5 + Math.random() * 3, rot: Math.random() * 6, vr: -.1 + Math.random() * .2,
+    c: cols[(Math.random() * cols.length) | 0], hex: Math.random() < .55
+  }));
+  const frame = () => {
+    cx.clearRect(0, 0, W, H);
+    bits.forEach(b => {
+      b.x += b.vx; b.y += b.vy; b.rot += b.vr; if (b.y > H + 30){ b.y = -30; b.x = Math.random() * W; }
+      cx.save(); cx.translate(b.x, b.y); cx.rotate(b.rot); cx.fillStyle = b.c; cx.beginPath();
+      if (b.hex){ for (let k = 0; k < 6; k++){ const a = k * Math.PI / 3; cx.lineTo(Math.cos(a) * b.r, Math.sin(a) * b.r); } cx.closePath(); }
+      else cx.rect(-b.r / 2, -b.r / 4, b.r, b.r / 2);
+      cx.fill(); cx.restore();
+    });
+    confettiRAF = requestAnimationFrame(frame);
+  };
+  frame();
+}
+
+/* Sheet-driven controls: act only when a value CHANGES. */
+function handleControls(c){
+  if (c.round) { round = c.round; renderRound(); }
+  const o = (c.overlay || 'none').toLowerCase().trim();
+  const key = (o === 'none' || o === 'off' || o === '') ? 'none' : o + '|' + (c.message || '') + '|' + (o === 'round' ? round : '');
+  if (key !== lastOvKey){
+    lastOvKey = key;
+    if (key === 'none') hideOverlays();
+    else showOverlay(o, { message: c.message });
+  }
+  const tc = (c.timer || '').toLowerCase().trim();
+  if (tc !== lastTimerCmd){
+    const prev = lastTimerCmd; lastTimerCmd = tc;
+    if (prev !== null){ // ignore whatever was in the sheet when the page first loaded
+      if (tc === 'start') timerStart(); else if (tc === 'pause') timerPause(); else if (tc === 'reset' || tc === 'idle') timerReset();
+    }
+  }
+}
+
+/* =====================  TIMER  ===================== */
+const TOTAL_MS = CONFIG.TIMER_SECONDS * 1000, CIRC = 2 * Math.PI * 128;
+const T = { state: 'idle', rem: TOTAL_MS, endAt: 0, raf: 0, lastSec: null };
+function renderTimer(){
+  const secs = Math.ceil(T.rem / 1000);
+  $('#count').textContent = T.state === 'done' ? '0' : secs;
+  $('#ring').style.strokeDashoffset = CIRC * (1 - T.rem / TOTAL_MS);
+  $('#ring').setAttribute('stroke-dasharray', CIRC);
+  $('#countNote').textContent = { idle: 'Ready', running: 'Spell it!', paused: 'Paused', done: 'Time!' }[T.state];
+  document.body.classList.toggle('danger', T.state === 'running' && T.rem > 0 && secs <= 3);
+  document.body.classList.toggle('timeup', T.state === 'done');
+  document.body.classList.toggle('timer-on', T.state !== 'idle');
+}
+function loop(){
+  T.rem = Math.max(0, T.endAt - performance.now());
+  const secs = Math.ceil(T.rem / 1000);
+  if (secs !== T.lastSec){ if (secs <= 3 && secs > 0) sfx.tick(); T.lastSec = secs; }
+  if (T.rem <= 0){ T.state = 'done'; renderTimer(); sfx.buzz(); clearTimeout(T.hideT); T.hideT = setTimeout(() => { if (T.state === 'done') timerReset(); }, CONFIG.TIMER_HIDE_MS); return; }
+  renderTimer(); T.raf = requestAnimationFrame(loop);
+}
+function timerStart(){
+  audio();
+  if (T.state === 'running') return;
+  if (T.state === 'done' || T.rem <= 0) timerReset();
+  clearTimeout(T.hideT); T.endAt = performance.now() + T.rem; T.state = 'running'; T.lastSec = null; loop();
+}
+function timerPause(){
+  if (T.state !== 'running') return;
+  cancelAnimationFrame(T.raf); T.rem = Math.max(0, T.endAt - performance.now()); T.state = 'paused'; renderTimer();
+}
+function timerReset(){ clearTimeout(T.hideT); cancelAnimationFrame(T.raf); T.state = 'idle'; T.rem = TOTAL_MS; T.lastSec = null; renderTimer(); }
+function timerToggle(){ T.state === 'running' ? timerPause() : timerStart(); }
+
+/* =====================  CONTROLS & KEYS  ===================== */
+function setPanel(open){
+  $('#controls').classList.toggle('open', open);
+  $('#handle').setAttribute('aria-expanded', open);
+  $('#togText').textContent = open ? 'Controls ▼' : 'Controls ▲';
+}
+$('#handle').addEventListener('click', () => setPanel(!$('#controls').classList.contains('open')));
+$('#handle').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); $('#handle').click(); } });
+$('#bConnect').addEventListener('click', () => connect($('#csvUrl').value));
+$('#csvUrl').addEventListener('keydown', e => { if (e.key === 'Enter') connect($('#csvUrl').value); });
+$('#bDemo').addEventListener('click', () => { $('#csvUrl').value = ''; connect(''); });
+$('#bStart').addEventListener('click', timerStart);
+$('#bPause').addEventListener('click', timerPause);
+$('#bReset').addEventListener('click', timerReset);
+$('#bClear').addEventListener('click', hideOverlays);
+$$('[data-t]').forEach(b => b.addEventListener('click', () => ({ start: timerStart, pause: timerPause, reset: timerReset })[b.dataset.t]()));
+$('#bMute').addEventListener('click', toggleMute);
+$('#bFull').addEventListener('click', toggleFull);
+$('#bSim').addEventListener('click', () => {
+  if (csvUrl){ alert('Demo pledges only work on demo data. Click "Use demo data" first.'); return; }
+  const t = teams[(Math.random() * teams.length) | 0]; t.amount += 50 + Math.round(Math.random() * 6) * 50; renderAll();
+});
+$$('[data-ov]').forEach(b => b.addEventListener('click', () => ovFromUI(b.dataset.ov)));
+function ovFromUI(type){
+  showOverlay(type, { round: type === 'round' ? $('#roundSel').value : undefined, message: type === 'round' || type === 'congrats' || type === 'sting' ? $('#msgIn').value.trim() : '' });
+}
+function restartShowcase(){ showcasePos = 0; store.set('uwbee_showpos', '0'); showOverlay('sponsors'); }
+$('#bShowRestart').addEventListener('click', restartShowcase);
+function soundLabel(){
+  const b = $('#bMute'); if (!b) return;
+  b.textContent = muted ? 'Sounds: off' : (actx && actx.state === 'running') ? 'Sounds: on' : 'Sounds: click the page once';
+}
+function toggleMute(){ muted = !muted; soundLabel(); }
+function toggleFull(){ document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); }
+
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'select' || tag === 'textarea'){ if (e.key === 'Escape') e.target.blur(); return; }
+  if (e.target.id === 'handle' && e.key === ' ') return;
+  switch (e.key.toLowerCase()){
+    case ' ': e.preventDefault(); timerToggle(); break;
+    case 'r': timerReset(); break;
+    case 'n': ovFromUI('round'); break;                // N = New round
+    case 'w': ovFromUI('congrats'); break;             // W = Winner / congratulations
+    case 's': ovFromUI('sting'); break;                // S = Sting
+    case 'h': ovFromUI('sponsors'); break;             // H = Hive showcase (resumes where it left off)
+    case 'a': restartShowcase(); break;                // A = start the showcase over, from the beginning
+    case 'g': ovFromUI('impact'); break;               // G = where your Gift goes
+    case 'escape': hideOverlays(); if (T.state === 'done') timerReset(); break;
+    case 'f': toggleFull(); break;
+    case 'c': setPanel(!$('#controls').classList.contains('open')); break;
+    case 'm': toggleMute(); break;
+  }
+});
+/* Browsers keep sound off until you click or press a key on the page once. Do it on any interaction. */
+['pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => {
+  const c = audio(); if (c && c.resume) c.resume().then(soundLabel, soundLabel); soundLabel();
+}, true));
+setInterval(soundLabel, 1500);
+$$('.ov').forEach(o => o.addEventListener('click', hideOverlays));
+
+/* =====================  START  ===================== */
+$$('.give-title').forEach(e => e.textContent = CONFIG.QR_TITLE);
+$$('.give-note').forEach(e => e.textContent = CONFIG.QR_NOTE);
+renderAll(); renderTimer(); startBees(); soundLabel();
+/* demo only: pretend gifts arrive every few seconds so the jar, drips and bees keep moving */
+setInterval(() => { if (!csvUrl && document.visibilityState === 'visible') $('#bSim').click(); }, 7000);
+const qs = new URLSearchParams(location.search).get('csv');
+const saved = qs || store.get('uwbee_csv');
+if (saved){ $('#csvUrl').value = saved; connect(saved); }
+})();
+</script>
+</body>
+</html>
